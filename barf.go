@@ -131,7 +131,7 @@ func Stark(augmentation ...Augment) error {
 	return createServer(augu)
 }
 
-// Beck starts the barf server and returns an error, if any. Alternatively, Beck also creates a new barf server with the default config and starts it, only if barf.Stark was not called before.
+// Beck starts the barf server and returns an error, if any. Alternatively, Beck also creates a new barf server with the default config and starts it, only if barf.Stark() was not called before.
 func Beck() error {
 	// return nil if server already Beckoned
 	if server.Beckoned != nil && *server.Beckoned {

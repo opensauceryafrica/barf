@@ -2,11 +2,15 @@ package main
 
 import (
 	"log"
+	"regexp"
 
 	"github.com/opensaucerer/barf"
 )
 
 func main() {
+
+	path := "/auth/login//"
+	log.Println(regexp.MustCompile("^/+|/+$").ReplaceAllString(path, ""))
 
 	// app = Express()
 
