@@ -163,7 +163,7 @@ func main() {
 
 	// create server
 	logging := true
-    recovery := true
+        recovery := true
 	if err := barf.Stark(barf.Augment{
 		Port:    env.Port,
 		Logging: &logging,
