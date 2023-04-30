@@ -33,9 +33,14 @@ func (r *response) JSON(data interface{}) {
 }
 
 // Status prepares a response with the given writer and status code
-func Status(w http.ResponseWriter, code int) *response {
+func (r *response) Status(code int) *response {
+	r.code = code
+	return r
+}
+
+// Response prepares a response with the given writer
+func Response(w http.ResponseWriter) *response {
 	return &response{
-		code:   code,
 		writer: w,
 	}
 }

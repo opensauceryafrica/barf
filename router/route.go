@@ -9,3 +9,8 @@ type Route struct {
 	Query   map[string]string
 	Params  map[string]string
 }
+
+type Router struct {
+	Routes []*Route
+	Entry  string
+}

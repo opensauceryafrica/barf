@@ -30,7 +30,7 @@ func main() {
 	}
 
 	barf.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		barf.Status(w, http.StatusOK).JSON(barf.Res{
+		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{
 			Status:  true,
 			Data:    nil,
 			Message: "Hello World",
@@ -41,5 +41,4 @@ func main() {
 	if err := barf.Beck(); err != nil {
 		log.Fatal(err)
 	}
-
 }

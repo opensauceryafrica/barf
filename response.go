@@ -5,8 +5,8 @@ import (
 	"github.com/opensaucerer/barf/typing"
 )
 
-// Status prepares a response with the given writer and status code
-var Status = server.Status
+// Response prepares a response with the given writer
+var Response = server.Response
 
 // Res is a simple struct for a status based response
 type Res = typing.Response
