@@ -55,12 +55,11 @@ import (
 
 func main() {
 	// create server
-	logging := true
-	recovery := true
+	allow := true
 	if err := barf.Stark(barf.Augment{
 		Port:     env.Port,
-		Logging:  &logging,  // enable request logging
-		Recovery: &recovery, // enable panic recovery so barf returns a 500 error instead of crashing
+		Logging:  &allow,  // enable request logging
+		Recovery: &allow, // enable panic recovery so barf returns a 500 error instead of crashing
 	}); err != nil {
 		log.Fatal(err)
 	}
@@ -107,12 +106,11 @@ func main() {
 	}
 
 	// create server
-	logging := true
-	recovery := true
+	allow := true
 	if err := barf.Stark(barf.Augment{
 		Port:     env.Port,
-		Logging:  &logging,
-		Recovery: &recovery,
+		Logging:  &allow,
+		Recovery: &allow,
 	}); err != nil {
 		log.Fatal(err)
 	}
@@ -159,12 +157,11 @@ func main() {
 	}
 
 	// create server
-	logging := true
-	recovery := true
+	allow := true
 	if err := barf.Stark(barf.Augment{
 		Port:     env.Port,
-		Logging:  &logging,
-		Recovery: &recovery,
+		Logging:  &allow,
+		Recovery: &allow,
 	}); err != nil {
 		log.Fatal(err)
 	}
