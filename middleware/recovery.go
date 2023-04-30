@@ -10,7 +10,7 @@ import (
 // Recover is a middleware that recovers from panics and sends a 500 response.
 func Recover(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if server.Augment.Recovery {
+		if *server.Augment.Recovery {
 			defer func() {
 				r := recover()
 				if r != nil {

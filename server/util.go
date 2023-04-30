@@ -5,11 +5,6 @@ import (
 	"strings"
 )
 
-// Query returns a map of the query parameters
-func Query(u *url.URL) map[string][]string {
-	return u.Query()
-}
-
 // Path returns the path of the URL
 func Path(u *url.URL) string {
 	return u.Path

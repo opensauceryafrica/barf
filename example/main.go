@@ -22,17 +22,20 @@ func main() {
 	}
 
 	// create server
+	logging := true
 	if err := barf.Stark(barf.Augment{
 		Port:    env.Port,
-		Logging: true, // enable request logging
+		Logging: &logging, // enable request logging
 	}); err != nil {
 		log.Fatal(err)
 	}
 
-	barf.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	barf.Get("/dashboard/:username", func(w http.ResponseWriter, r *http.Request) {
+		params, _ := barf.Request(r).Params().JSON()
+		query, _ := barf.Request(r).Query().JSON()
 		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{
 			Status:  true,
-			Data:    nil,
+			Data:    map[string]interface{}{"params": params, "query": query},
 			Message: "Hello World",
 		})
 	})

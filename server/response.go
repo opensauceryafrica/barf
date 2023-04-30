@@ -32,13 +32,13 @@ func (r *response) JSON(data interface{}) {
 	json.NewEncoder(r.writer).Encode(data)
 }
 
-// Status prepares a response with the given writer and status code
+// Status loads a barf response with the given status code
 func (r *response) Status(code int) *response {
 	r.code = code
 	return r
 }
 
-// Response prepares a response with the given writer
+// Response prepares a barf response with the given writer
 func Response(w http.ResponseWriter) *response {
 	return &response{
 		writer: w,

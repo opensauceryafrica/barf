@@ -1,5 +1,7 @@
 package typing
 
+import "time"
+
 // Augment holds refrence to all of barf's config
 type Augment struct {
 	// MaxHeaderBytes is the maximum number of bytes the server will
@@ -32,8 +34,32 @@ type Augment struct {
 	ReadHeaderTimeout int
 	// Logging is for defining whether or not to enable request logging
 	// default is true
-	Logging bool
+	Logging *bool
 	// Recovery is for defining whether or not to enable panic recovery
 	// default is true
-	Recovery bool
+	Recovery *bool
+	// CORS is the configuration for Cross-Origin Resource Sharing
+	CORS *CORS
+}
+
+// CORS holds configuration for Cross-Origin Resource Sharing
+type CORS struct {
+	// AllowOrigins is a list of origins a cross-domain request can be executed from
+	AllowOrigins []string
+	// AllowMethods is a list of methods the client is allowed to use with
+	// cross-domain requests
+	AllowMethods []string
+	// AllowHeaders is list of non simple headers the client is allowed to use with
+	// cross-domain requests
+	AllowHeaders []string
+	// ExposeHeaders indicates which headers are safe to expose to the API of a CORS
+	// API specification
+	ExposeHeaders []string
+	// AllowCredentials indicates whether or not the response to the request can be exposed
+	// when the credentials flag is true. When used as part of a response to a preflight
+	// request, this indicates whether or not the actual request can be made using credentials.
+	AllowCredentials bool
+	// MaxAge indicates how long (in seconds) the results of a preflight request
+	// can be cached
+	MaxAge time.Duration
 }

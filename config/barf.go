@@ -2,6 +2,9 @@ package config
 
 import (
 	"os"
+	"time"
+
+	"github.com/opensaucerer/barf/typing"
 )
 
 const (
@@ -30,15 +33,24 @@ const (
 
 	// EnvPath is the path to the environment variables file
 	EnvPath = ".env"
+)
 
+var (
 	// Logging is for defining whether or not to enable request logging
 	Logging = true
 
 	// Recovery is for defining whether or not to enable panic recovery
 	Recovery = true
-)
 
-var (
+	// CORS is the configuration for Cross-Origin Resource Sharing
+	CORS = &typing.CORS{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
+		AllowHeaders: []string{"Origin", "Accept", "Content-Type", "X-Requested-With", "Authorization"},
+		// ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: false,
+		MaxAge:           1 * time.Hour,
+	}
 
 	// ShutdownChan is the channel to listen for shutdown signals
 	ShutdownChan = make(chan os.Signal, 1)

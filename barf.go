@@ -31,41 +31,6 @@ func createServer(a typing.Augment) error {
 	// // we should do more cross origin stuff here
 	// rc := middleware.CORS(rwr)
 
-	// // inject combined logger (apache & nginx style)
-	// logger := handlers.CombinedLoggingHandler(os.Stdout, rc)
-
-	// // register routes with versioning
-	// version.Version1Routes(r.StrictSlash(true))
-
-	// var err error
-
-	// // load .env file
-	// env := config.MustGet("ENV_PATH", ".env")
-	// log.Printf("Loading %s file\n", env)
-	// if err := godotenv.Load(env); err != nil {
-	// 	if err := godotenv.Load(); err != nil {
-	// 		log.Printf("Error loading %s file\n", env)
-	// 	}
-	// }
-
-	// // verify env variables
-	// if err := config.VerifyEnvironment(typing.Env{}); err != nil {
-	// 	log.Fatalf("Error verifying environment variables: %s\n", err)
-	// }
-
-	// append env variables to config.Env
-	// config.AppendEnvironment(config.Env)
-
-	// // connect to database
-	// client, err := database.NewMongoDBClient(config.Env.Raid2EarnDBUri)
-	// if err != nil {
-	// 	log.Fatalf("Error connecting to Raid2EarnDB: %s\n", err)
-	// }
-	// // select database
-	// database.Raid2EarnDB = client.Database(config.Env.Raid2EarnDBName)
-
-	// port := fmt.Sprintf(":%s", config.Env.Port)
-
 	// create handler
 	server.Mux = http.NewServeMux()
 
@@ -97,8 +62,9 @@ func Stark(augmentation ...Augment) error {
 		WriteTimeout:      config.WriteTimeout,
 		ShutdownTimeout:   config.ShutdownTimeout,
 		Port:              config.Port,
-		Logging:           config.Logging,
-		Recovery:          config.Recovery,
+		Logging:           &config.Logging,
+		Recovery:          &config.Recovery,
+		CORS:              config.CORS,
 	}
 	if augmentation != nil {
 		// validate the struct
@@ -127,6 +93,15 @@ func Stark(augmentation ...Augment) error {
 		}
 		if aug.ReadHeaderTimeout != 0 {
 			augu.ReadHeaderTimeout = aug.ReadHeaderTimeout
+		}
+		if aug.Logging != nil {
+			augu.Logging = aug.Logging
+		}
+		if aug.Recovery != nil {
+			augu.Recovery = aug.Recovery
+		}
+		if aug.CORS != nil {
+			augu.CORS = aug.CORS
 		}
 	}
 	// make config global
