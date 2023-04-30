@@ -30,6 +30,12 @@ const (
 
 	// EnvPath is the path to the environment variables file
 	EnvPath = ".env"
+
+	// Logging is for defining whether or not to enable request logging
+	Logging = true
+
+	// Recovery is for defining whether or not to enable panic recovery
+	Recovery = true
 )
 
 var (

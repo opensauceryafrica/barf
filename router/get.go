@@ -5,9 +5,9 @@ import "net/http"
 // Get registers a route with the GET HTTP method
 func Get(path string, handler func(http.ResponseWriter, *http.Request)) {
 	route := &Route{
-		path,
-		get,
-		handler,
+		Path:    path,
+		Method:  get,
+		Handler: handler,
 	}
 	route.Register()
 }

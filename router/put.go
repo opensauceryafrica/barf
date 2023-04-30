@@ -5,9 +5,9 @@ import "net/http"
 // Put registers a route with the PUT HTTP method
 func Put(path string, handler func(http.ResponseWriter, *http.Request)) {
 	route := &Route{
-		path,
-		put,
-		handler,
+		Path:    path,
+		Method:  put,
+		Handler: handler,
 	}
 	route.Register()
 }

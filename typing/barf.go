@@ -30,4 +30,10 @@ type Augment struct {
 	// zero, there is no timeout.
 	// default is 10 seconds
 	ReadHeaderTimeout int
+	// Logging is for defining whether or not to enable request logging
+	// default is true
+	Logging bool
+	// Recovery is for defining whether or not to enable panic recovery
+	// default is true
+	Recovery bool
 }

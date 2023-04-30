@@ -8,22 +8,22 @@ import (
 // Func retrieves the handler function for the given path and method
 func (r *Route) Func() {
 	// remove preceding and trailing slashes
-	r.path = regexp.MustCompile("^/+|/+$").ReplaceAllString(r.path, "")
-	if r.path == "" {
-		r.path = "/"
+	r.Path = regexp.MustCompile("^/+|/+$").ReplaceAllString(r.Path, "")
+	if r.Path == "" {
+		r.Path = "/"
 	}
 	// if path found in top level of table
-	if table[r.path] != nil && table[r.path][r.method] != nil {
-		r.handler = table[r.path][r.method]
+	if table[r.Path] != nil && table[r.Path][r.Method] != nil {
+		r.Handler = table[r.Path][r.Method]
 		return
 	}
 
 	// handle path with parameters
-	paths := strings.Split(r.path, "/")
+	paths := strings.Split(r.Path, "/")
 TLoop:
 	for path, methods := range table {
 		variables := strings.Split(path, "/")
-		if len(paths) == len(variables) && methods[r.method] != nil {
+		if len(paths) == len(variables) && methods[r.Method] != nil {
 			match := true
 		VLoop:
 			for i, variable := range variables {
@@ -33,7 +33,7 @@ TLoop:
 				}
 			}
 			if match {
-				r.handler = methods[r.method]
+				r.Handler = methods[r.Method]
 				break TLoop
 			}
 		}

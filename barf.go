@@ -15,6 +15,7 @@ import (
 
 	"github.com/opensaucerer/barf/config"
 	"github.com/opensaucerer/barf/log"
+	"github.com/opensaucerer/barf/middleware"
 	"github.com/opensaucerer/barf/server"
 	"github.com/opensaucerer/barf/typing"
 )
@@ -74,7 +75,7 @@ func createServer(a typing.Augment) error {
 		ReadTimeout:       time.Duration(server.Augment.ReadTimeout) * time.Second,
 		WriteTimeout:      time.Duration(server.Augment.WriteTimeout) * time.Second,
 		MaxHeaderBytes:    server.Augment.MaxHeaderBytes,
-		Handler:           logger.Request(server.Mux),
+		Handler:           middleware.Recover(middleware.Router(middleware.Logger(server.Mux))),
 		ReadHeaderTimeout: time.Duration(server.Augment.ReadHeaderTimeout) * time.Second,
 	}
 
@@ -96,6 +97,8 @@ func Stark(augmentation ...Augment) error {
 		WriteTimeout:      config.WriteTimeout,
 		ShutdownTimeout:   config.ShutdownTimeout,
 		Port:              config.Port,
+		Logging:           config.Logging,
+		Recovery:          config.Recovery,
 	}
 	if augmentation != nil {
 		// validate the struct
