@@ -1,10 +1,7 @@
-package config
+package constant
 
 import (
 	"os"
-	"time"
-
-	"github.com/opensaucerer/barf/typing"
 )
 
 const (
@@ -41,16 +38,6 @@ var (
 
 	// Recovery is for defining whether or not to enable panic recovery
 	Recovery = true
-
-	// CORS is the configuration for Cross-Origin Resource Sharing
-	CORS = &typing.CORS{
-		AllowOrigins: []string{"*"},
-		AllowMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
-		AllowHeaders: []string{"Origin", "Accept", "Content-Type", "X-Requested-With", "Authorization"},
-		// ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: false,
-		MaxAge:           1 * time.Hour,
-	}
 
 	// ShutdownChan is the channel to listen for shutdown signals
 	ShutdownChan = make(chan os.Signal, 1)

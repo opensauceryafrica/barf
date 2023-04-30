@@ -8,19 +8,17 @@ import (
 )
 
 /*
-Env loads environment variables into the given EnvStruct from the give EnvPath.
+Env loads environment variables into the given EnvStruct either from the os environment or from the give EnvPath.
 
-The EnvPath is optional and defaults to ".env".
+The EnvPath is optional. If no EnvPath is given, Env will attempt to load environment variables from the os environment.
 
 The struct must have a tag named "barfenv" with the following format: "key=YOUR_ENV_KEY;required=true" or "key=YOUR_ENV_KEY;required=false".*/
 func Env(EnvStruct interface{}, EnvPath ...string) error {
-	if len(EnvPath) == 0 {
-		EnvPath = []string{".env"}
-	}
-	envPath := EnvPath[0]
-	// load environment variables
-	if err := load(envPath); err != nil {
-		return err
+	if len(EnvPath) > 0 {
+		// load environment variables
+		if err := load(EnvPath[0]); err != nil {
+			return err
+		}
 	}
 	// ensure struct is not nil
 	if EnvStruct == nil {

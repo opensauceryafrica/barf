@@ -3,10 +3,10 @@ package logger
 import (
 	"log"
 
-	"github.com/opensaucerer/barf/config"
+	"github.com/opensaucerer/barf/constant"
 )
 
 // Warn prints a warning message
 func Warn(msg string) {
-	log.Println(config.WarnColor + msg + config.ResetColor)
+	log.Println(constant.WarnColor + msg + constant.ResetColor)
 }

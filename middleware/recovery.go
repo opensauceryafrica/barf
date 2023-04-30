@@ -12,10 +12,10 @@ func Recover(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if *server.Augment.Recovery {
 			defer func() {
-				r := recover()
-				if r != nil {
+				rr := recover()
+				if rr != nil {
 					var err error
-					switch t := r.(type) {
+					switch t := rr.(type) {
 					case string:
 						err = errors.New(t)
 					case error:

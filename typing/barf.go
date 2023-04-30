@@ -1,6 +1,6 @@
 package typing
 
-import "time"
+import "net/http"
 
 // Augment holds refrence to all of barf's config
 type Augment struct {
@@ -44,22 +44,30 @@ type Augment struct {
 
 // CORS holds configuration for Cross-Origin Resource Sharing
 type CORS struct {
-	// AllowOrigins is a list of origins a cross-domain request can be executed from
-	AllowOrigins []string
+	// AllowedOrigins is a list of origins a cross-domain request can be executed from
+	AllowedOrigins []string
 	// AllowMethods is a list of methods the client is allowed to use with
 	// cross-domain requests
-	AllowMethods []string
+	AllowedMethods []string
 	// AllowHeaders is list of non simple headers the client is allowed to use with
 	// cross-domain requests
-	AllowHeaders []string
+	AllowedHeaders []string
 	// ExposeHeaders indicates which headers are safe to expose to the API of a CORS
 	// API specification
-	ExposeHeaders []string
+	ExposedHeaders []string
 	// AllowCredentials indicates whether or not the response to the request can be exposed
 	// when the credentials flag is true. When used as part of a response to a preflight
 	// request, this indicates whether or not the actual request can be made using credentials.
 	AllowCredentials bool
 	// MaxAge indicates how long (in seconds) the results of a preflight request
 	// can be cached
-	MaxAge time.Duration
+	MaxAge int
+	// OptionsPassthrough instructs preflight to let other potential next handlers to process the OPTIONS method
+	OptionsPassthrough bool
+	// OptionsSuccessStatus sets the statusCode for OPTIONS requests, defaults to 204
+	OptionsSuccessStatus int
+	// AllowedOriginFunc is a callback for handling user defined origin checks.
+	AllowedOriginFunc func(origin string) bool
+	// AllowedOriginWithRequestFunc is a callback for handling user defined origin checks with access to the http request object.
+	AllowedOriginWithRequestFunc func(origin string, r *http.Request) bool
 }

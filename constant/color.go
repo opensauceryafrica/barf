@@ -1,4 +1,4 @@
-package config
+package constant
 
 const (
 	// WarnColor is the color for warning messages

@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/opensaucerer/barf/config"
+	"github.com/opensaucerer/barf/constant"
 	"github.com/opensaucerer/barf/typing"
 )
 
@@ -18,7 +18,7 @@ func append(env reflect.Value) {
 	// append each struct field tag
 	for i := 0; i < t.NumField(); i++ {
 		// get the field tag value
-		tag := t.Type().Field(i).Tag.Get(config.EnvTag)
+		tag := t.Type().Field(i).Tag.Get(constant.EnvTag)
 		if tag == "" {
 			continue
 		}
@@ -32,7 +32,7 @@ func append(env reflect.Value) {
 				continue
 			}
 			// check if key is valid
-			if _, ok := config.EnvTagKeys[kv[0]]; !ok {
+			if _, ok := constant.EnvTagKeys[kv[0]]; !ok {
 				continue
 			}
 			// set value

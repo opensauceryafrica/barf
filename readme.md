@@ -57,7 +57,7 @@ func main() {
 	// create server
 	allow := true
 	if err := barf.Stark(barf.Augment{
-		Port:     env.Port,
+		Port:     "5000",
 		Logging:  &allow,  // enable request logging
 		Recovery: &allow, // enable panic recovery so barf returns a 500 error instead of crashing
 	}); err != nil {

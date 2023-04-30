@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/opensaucerer/barf"
 )
@@ -23,36 +22,38 @@ func main() {
 	}
 
 	// create server
-	logging := true
+	allow := true
 	if err := barf.Stark(barf.Augment{
-		Port:    env.Port,
-		Logging: &logging, // enable request logging
-		CORS: &barf.CORS{
-			AllowedOrigins: []string{"https://*.google.com"},
-			MaxAge:         3600,
-			AllowedMethods: []string{
-				http.MethodGet,
-			},
-			AllowedOriginFunc: func(origin string) bool {
-				if origin == "secure.com" {
-					return false
-				} else if origin == "insecure.com" {
-					return true
-				}
-				return false
-			},
-		},
+		Port:     env.Port,
+		Logging:  &allow,
+		Recovery: &allow,
 	}); err != nil {
 		log.Fatal(err)
 	}
 
-	barf.Get("/dashboard/:username", func(w http.ResponseWriter, r *http.Request) {
-		<-time.After(2 * time.Second)
+	barf.Post("/:username", func(w http.ResponseWriter, r *http.Request) {
+
+		var data struct {
+			Name string `json:"name"`
+			Age  int    `json:"age"`
+		}
+
+		err := barf.Request(r).Body().Format(&data)
+		if err != nil {
+			barf.Response(w).Status(http.StatusBadRequest).JSON(barf.Res{
+				Status:  false,
+				Data:    nil,
+				Message: "Invalid request body",
+			})
+			return
+		}
+
 		params, _ := barf.Request(r).Params().JSON()
 		query, _ := barf.Request(r).Query().JSON()
+
 		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{
 			Status:  true,
-			Data:    map[string]interface{}{"params": params, "query": query},
+			Data:    map[string]interface{}{"params": params, "query": query, "body": data},
 			Message: "Hello World",
 		})
 	})

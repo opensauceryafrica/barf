@@ -10,6 +10,3 @@ build:
 run:
 	make build
 	./bin/$(NAME)
-
-start:
-	./bin/$(NAME)

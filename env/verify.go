@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/opensaucerer/barf/config"
+	"github.com/opensaucerer/barf/constant"
 	"github.com/opensaucerer/barf/typing"
 )
 
@@ -19,7 +19,7 @@ func verify(env reflect.Value) error {
 	// verify each struct field tag
 	for i := 0; i < t.NumField(); i++ {
 		// get the field tag value
-		tag := t.Type().Field(i).Tag.Get(config.EnvTag)
+		tag := t.Type().Field(i).Tag.Get(constant.EnvTag)
 		if tag == "" {
 			continue
 		}
@@ -35,7 +35,7 @@ func verify(env reflect.Value) error {
 				return fmt.Errorf("invalid key value pair -> %s <- in env struct %T", pair, env)
 			}
 			// check if key is valid
-			val, ok := config.EnvTagKeys[kv[0]]
+			val, ok := constant.EnvTagKeys[kv[0]]
 			if !ok {
 				return fmt.Errorf("invalid key %s", kv[0])
 			}

@@ -3,10 +3,10 @@ package logger
 import (
 	"log"
 
-	"github.com/opensaucerer/barf/config"
+	"github.com/opensaucerer/barf/constant"
 )
 
 // Debug logs a debug message
 func Debug(msg string) {
-	log.Println(config.DebugColor + msg + config.ResetColor)
+	log.Println(constant.DebugColor + msg + constant.ResetColor)
 }

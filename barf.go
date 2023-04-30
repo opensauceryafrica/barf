@@ -13,8 +13,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/opensaucerer/barf/config"
-	"github.com/opensaucerer/barf/log"
+	"github.com/opensaucerer/barf/constant"
+	logger "github.com/opensaucerer/barf/log"
 	"github.com/opensaucerer/barf/middleware"
 	"github.com/opensaucerer/barf/server"
 	"github.com/opensaucerer/barf/typing"
@@ -22,17 +22,20 @@ import (
 
 func createServer(a typing.Augment) error {
 
-	// // create router
-	// r := mux.NewRouter()
-
-	// // wrap router into custom recover middleware
-	// rwr := middleware.Recover(r)
-
-	// // we should do more cross origin stuff here
-	// rc := middleware.CORS(rwr)
-
 	// create handler
 	server.Mux = http.NewServeMux()
+
+	// wrap router into custom logger middleware
+	r := middleware.Logger(server.Mux)
+
+	// wrap router into custom router middleware
+	r = middleware.Router(r)
+
+	// we should do more cross origin stuff here
+	r = middleware.CORS(middleware.Prepare(*server.Augment.CORS))(r)
+
+	// wrap router into custom recover middleware
+	r = middleware.Recover(r)
 
 	// create server
 	server.HTTP = &http.Server{
@@ -40,7 +43,7 @@ func createServer(a typing.Augment) error {
 		ReadTimeout:       time.Duration(server.Augment.ReadTimeout) * time.Second,
 		WriteTimeout:      time.Duration(server.Augment.WriteTimeout) * time.Second,
 		MaxHeaderBytes:    server.Augment.MaxHeaderBytes,
-		Handler:           middleware.Recover(middleware.Router(middleware.Logger(server.Mux))),
+		Handler:           r,
 		ReadHeaderTimeout: time.Duration(server.Augment.ReadHeaderTimeout) * time.Second,
 	}
 
@@ -50,23 +53,23 @@ func createServer(a typing.Augment) error {
 // Stark retrieves any existing barf server or creates a new one and returns an error, if any.
 // You can optionally pass in a barf.Augment struct to override the default config.
 // To start the server, call the bart.Beck()
-func Stark(augmentation ...Augment) error {
+func Stark(augmentation ...typing.Augment) error {
 	// return nil if server already exists
 	if server.HTTP != nil {
 		return nil
 	}
 	augu := typing.Augment{
-		MaxHeaderBytes:    config.MaxHeaderBytes,
-		ReadTimeout:       config.ReadTimeout,
-		ReadHeaderTimeout: config.ReadTimeout,
-		WriteTimeout:      config.WriteTimeout,
-		ShutdownTimeout:   config.ShutdownTimeout,
-		Port:              config.Port,
-		Logging:           &config.Logging,
-		Recovery:          &config.Recovery,
-		CORS:              config.CORS,
+		MaxHeaderBytes:    constant.MaxHeaderBytes,
+		ReadTimeout:       constant.ReadTimeout,
+		ReadHeaderTimeout: constant.ReadTimeout,
+		WriteTimeout:      constant.WriteTimeout,
+		ShutdownTimeout:   constant.ShutdownTimeout,
+		Port:              constant.Port,
+		Logging:           &constant.Logging,
+		Recovery:          &constant.Recovery,
+		CORS:              &typing.CORS{},
 	}
-	if augmentation != nil {
+	if len(augmentation) > 0 {
 		// validate the struct
 		t := reflect.TypeOf(augmentation[0])
 		if t.Kind() != reflect.Struct {
@@ -141,8 +144,8 @@ func shutdown() {
 	// kill (no param) default send syscall.SIGTERM
 	// kill -2 is syscall.SIGINT
 	// kill -9 is syscall.SIGKILL but can't be catch, so don't need to add it
-	signal.Notify(config.ShutdownChan, syscall.SIGINT, syscall.SIGTERM)
-	<-config.ShutdownChan
+	signal.Notify(constant.ShutdownChan, syscall.SIGINT, syscall.SIGTERM)
+	<-constant.ShutdownChan
 	logger.Warn("shutting down BARF...")
 
 	// The context is used to inform the server it has 5 seconds to finish

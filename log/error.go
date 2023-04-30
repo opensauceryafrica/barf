@@ -3,10 +3,10 @@ package logger
 import (
 	"log"
 
-	"github.com/opensaucerer/barf/config"
+	"github.com/opensaucerer/barf/constant"
 )
 
 // Error logs an error message
 func Error(msg string) {
-	log.Println(config.ErrorColor + msg + config.ResetColor)
+	log.Println(constant.ErrorColor + msg + constant.ResetColor)
 }
