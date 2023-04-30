@@ -24,8 +24,8 @@ import (
 
 func main() {
 
-    // barf tries to be as unobtrusive as possible, so your route handlers still
-    // inherit the standard http.ResponseWriter and *http.Request parameters
+	// barf tries to be as unobtrusive as possible, so your route handlers still
+	// inherit the standard http.ResponseWriter and *http.Request parameters
 	barf.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{
 			Status:  true,
@@ -39,7 +39,6 @@ func main() {
 		log.Fatal(err)
 	}
 }
-
 ```
 
 ### BARF with custom configuration
@@ -59,9 +58,9 @@ func main() {
 	logging := true
 	recovery := true
 	if err := barf.Stark(barf.Augment{
-		Port:    env.Port,
-		Logging: &logging, // enable request logging
-        Recovery: &recovery, // enable panic recovery so barf returns a 500 error instead of crashing
+		Port:     env.Port,
+		Logging:  &logging,  // enable request logging
+		Recovery: &recovery, // enable panic recovery so barf returns a 500 error instead of crashing
 	}); err != nil {
 		log.Fatal(err)
 	}
@@ -79,7 +78,6 @@ func main() {
 		log.Fatal(err)
 	}
 }
-
 ```
 
 ### BARF with Environment Variables
@@ -112,9 +110,9 @@ func main() {
 	logging := true
 	recovery := true
 	if err := barf.Stark(barf.Augment{
-		Port:    env.Port,
-		Logging: &logging,
-        Recovery: &recovery,
+		Port:     env.Port,
+		Logging:  &logging,
+		Recovery: &recovery,
 	}); err != nil {
 		log.Fatal(err)
 	}
@@ -122,7 +120,7 @@ func main() {
 	barf.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{
 			Status:  true,
-			Data:    map[string]interface{}{"params": params, "query": query},
+			Data:    nil,
 			Message: "Hello World",
 		})
 	})
@@ -132,7 +130,6 @@ func main() {
 		log.Fatal(err)
 	}
 }
-
 ```
 
 ### BARF with request body, variable paths and query parameters
@@ -163,33 +160,33 @@ func main() {
 
 	// create server
 	logging := true
-    recovery := true
+	recovery := true
 	if err := barf.Stark(barf.Augment{
-		Port:    env.Port,
-		Logging: &logging,
-        Recovery: &recovery,
+		Port:     env.Port,
+		Logging:  &logging,
+		Recovery: &recovery,
 	}); err != nil {
 		log.Fatal(err)
 	}
 
 	barf.Post("/:username", func(w http.ResponseWriter, r *http.Request) {
 
-        var data struct {
-            Name string `json:"name"`
-            Age int `json:"age"`
-        }
+		var data struct {
+			Name string `json:"name"`
+			Age  int    `json:"age"`
+		}
 
-        err := barf.Request(r).Body().Format(&data)
-        if err != nil {
-            barf.Response(w).Status(http.StatusBadRequest).JSON(barf.Res{
-                Status:  false,
-                Data:    nil,
-                Message: "Invalid request body",
-            })
-            return
-        }
+		err := barf.Request(r).Body().Format(&data)
+		if err != nil {
+			barf.Response(w).Status(http.StatusBadRequest).JSON(barf.Res{
+				Status:  false,
+				Data:    nil,
+				Message: "Invalid request body",
+			})
+			return
+		}
 
-        params, _ := barf.Request(r).Params().JSON()
+		params, _ := barf.Request(r).Params().JSON()
 		query, _ := barf.Request(r).Query().JSON()
 
 		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{
