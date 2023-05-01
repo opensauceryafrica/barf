@@ -41,8 +41,33 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// apply middleware
+	barf.Hippocampus().Hijack(func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			log.Println("before 0")
+			h.ServeHTTP(w, r)
+			log.Println("after 0")
+		})
+	})
+
+	barf.Hippocampus().Hijack(func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			log.Println("before 1")
+			h.ServeHTTP(w, r)
+			log.Println("after 1")
+		})
+	})
+
+	barf.Hippocampus().Hijack(func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			log.Println("before 2")
+			h.ServeHTTP(w, r)
+			log.Println("after 2")
+		})
+	})
+
 	barf.Get("/dashboard/:username", func(w http.ResponseWriter, r *http.Request) {
-		<-time.After(2 * time.Second)
+		<-time.After(1 * time.Second)
 		params, _ := barf.Request(r).Params().JSON()
 		query, _ := barf.Request(r).Query().JSON()
 		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{

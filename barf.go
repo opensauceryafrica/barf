@@ -25,21 +25,27 @@ func createServer(a typing.Augment) error {
 	// create handler
 	server.Mux = http.NewServeMux()
 
-	// create barf for hijacking
-	server.Barf.Router = server.Mux
-	server.Barf.Stack = []typing.Middleware{}
+	var r http.Handler = server.Mux
 
-	// wrap router into custom logger middleware
-	r := middleware.Logger(server.Mux)
+	// wrap router into logger middleware
+	if *server.Augment.Logging {
+		r = middleware.Logger(r)
+	}
 
-	// wrap router into custom router middleware
-	r = middleware.Router(r)
+	// wrap router into router middleware
+	r = middleware.Router(server.JSON)(r)
 
-	// we should do more cross origin stuff here
+	// wrap router into cors middleware
 	r = middleware.CORS(middleware.Prepare(*server.Augment.CORS))(r)
 
-	// wrap router into custom recover middleware
-	r = middleware.Recover(r)
+	// // wrap router into recover middleware
+	// if *server.Augment.Recovery {
+	// 	r = middleware.Recover(server.JSON)(r)
+	// }
+
+	// create barf for hijacking
+	server.Barf.Router = r
+	server.Barf.Stack = []typing.Middleware{}
 
 	// create server
 	server.HTTP = &http.Server{
@@ -49,6 +55,12 @@ func createServer(a typing.Augment) error {
 		MaxHeaderBytes:    server.Augment.MaxHeaderBytes,
 		Handler:           r,
 		ReadHeaderTimeout: time.Duration(server.Augment.ReadHeaderTimeout) * time.Second,
+	}
+
+	// this will load the recovery middleware into the stack
+	if *server.Augment.Recovery {
+		Hippocampus().Hijack()
+		logger.Info("Recovery middleware added to base barf handler")
 	}
 
 	return nil
@@ -150,7 +162,7 @@ func shutdown() {
 	// kill -9 is syscall.SIGKILL but can't be catch, so don't need to add it
 	signal.Notify(constant.ShutdownChan, syscall.SIGINT, syscall.SIGTERM)
 	<-constant.ShutdownChan
-	logger.Warn("shutting down BARF...")
+	logger.Warn("Shutting down BARF...")
 
 	// The context is used to inform the server it has 5 seconds to finish
 	// the request it is currently handling

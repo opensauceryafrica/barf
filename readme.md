@@ -200,3 +200,60 @@ func main() {
 }
 
 ```
+
+### BARF with custom middleware
+
+```go
+package main
+
+import (
+	"log"
+	"net/http"
+
+	"github.com/opensaucerer/barf"
+)
+
+func main() {
+	// create server
+	allow := true
+	if err := barf.Stark(barf.Augment{
+		Port:     "5000",
+		Logging:  &allow,  // enable request logging
+		Recovery: &allow, // enable panic recovery so barf returns a 500 error instead of crashing
+	}); err != nil {
+		log.Fatal(err)
+	}
+
+	// apply global middleware to all routes - middleware is applied in the order it is added and must be added before the call to barf.Beck()
+	barf.Hippocampus().Hijack(func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			log.Println("before 0")
+			h.ServeHTTP(w, r)
+			log.Println("after 0")
+		})
+	})
+
+	// define routes
+	barf.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{
+			Status:  true,
+			Data:    nil,
+			Message: "Hello World",
+		})
+	})
+
+	// apply another global middleware
+	barf.Hippocampus().Hijack(func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			log.Println("before 1")
+			h.ServeHTTP(w, r)
+			log.Println("after 1")
+		})
+	})
+
+	// start barf server
+	if err := barf.Beck(); err != nil {
+		log.Fatal(err)
+	}
+}
+```
