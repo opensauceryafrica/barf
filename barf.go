@@ -36,7 +36,7 @@ func createServer(a typing.Augment) error {
 	r = middleware.Router(server.JSON)(r)
 
 	// wrap router into cors middleware
-	r = middleware.CORS(middleware.Prepare(*server.Augment.CORS))(r)
+	// r = middleware.CORS(middleware.Prepare(*server.Augment.CORS))(r)
 
 	// // wrap router into recover middleware
 	// if *server.Augment.Recovery {
@@ -57,7 +57,7 @@ func createServer(a typing.Augment) error {
 		ReadHeaderTimeout: time.Duration(server.Augment.ReadHeaderTimeout) * time.Second,
 	}
 
-	// this will load the recovery middleware into the stack
+	// this will load the CORS and Recovery middleware into the stack
 	if *server.Augment.Recovery {
 		Hippocampus().Hijack()
 		logger.Info("Recovery middleware added to base barf handler")

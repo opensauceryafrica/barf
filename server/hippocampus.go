@@ -48,6 +48,8 @@ func (h *hippocampus) Hijack(m ...typing.Middleware) {
 			for i := range h.stack {
 				r = h.stack[len(h.stack)-1-i](r)
 			}
+			// add cors middleware such that it is called first before any user-defined middleware
+			r = middleware.CORS(middleware.Prepare(*Augment.CORS))(r)
 			// add recovery middleware
 			if Augment.Recovery != nil && *Augment.Recovery {
 				r = middleware.Recover(JSON)(r)
