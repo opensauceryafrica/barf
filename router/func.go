@@ -3,8 +3,6 @@ package router
 import (
 	"regexp"
 	"strings"
-
-	"github.com/opensaucerer/barf/server"
 )
 
 // Func retrieves the handler function for the given path and method
@@ -36,7 +34,7 @@ TLoop:
 			}
 			if match {
 				r.Handler = methods[r.Method]
-				r.Params = server.Params(r.Path, path)
+				r.Params = Params(r.Path, path)
 				break TLoop
 			}
 		}

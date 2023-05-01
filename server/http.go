@@ -14,4 +14,6 @@ var (
 	Augment *typing.Augment
 
 	Beckoned *bool
+
+	Barf *hippocampus = &hippocampus{}
 )

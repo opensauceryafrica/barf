@@ -25,6 +25,10 @@ func createServer(a typing.Augment) error {
 	// create handler
 	server.Mux = http.NewServeMux()
 
+	// create barf for hijacking
+	server.Barf.Router = server.Mux
+	server.Barf.Stack = []typing.Middleware{}
+
 	// wrap router into custom logger middleware
 	r := middleware.Logger(server.Mux)
 

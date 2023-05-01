@@ -16,7 +16,7 @@ func Router(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// get route function
 		route := router.Route{
-			Path:    server.Path(r.URL),
+			Path:    router.Path(r.URL),
 			Method:  strings.ToLower(r.Method),
 			Handler: nil,
 			Params:  map[string]string{},

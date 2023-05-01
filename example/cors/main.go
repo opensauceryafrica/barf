@@ -34,12 +34,7 @@ func main() {
 				http.MethodGet,
 			},
 			AllowedOriginFunc: func(origin string) bool {
-				if origin == "secure.com" {
-					return false
-				} else if origin == "insecure.com" {
-					return true
-				}
-				return false
+				return origin == "https://www.google.com"
 			},
 		},
 	}); err != nil {

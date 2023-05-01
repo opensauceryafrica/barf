@@ -1,5 +1,7 @@
 package typing
 
+import "net/http"
+
 type Health struct {
 	Version     string `json:"version"`
 	Status      bool   `json:"status"`
@@ -13,3 +15,5 @@ type Response struct {
 }
 
 type M map[string]string
+
+type Middleware func(http.Handler) http.Handler

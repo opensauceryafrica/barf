@@ -3,9 +3,9 @@ package server
 import (
 	"net/http"
 
-	"github.com/opensaucerer/barf/server/body"
-	"github.com/opensaucerer/barf/server/param"
-	"github.com/opensaucerer/barf/server/query"
+	"github.com/opensaucerer/barf/router/body"
+	"github.com/opensaucerer/barf/router/param"
+	"github.com/opensaucerer/barf/router/query"
 )
 
 type request struct {

@@ -1,6 +1,10 @@
 package router
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/opensaucerer/barf/typing"
+)
 
 type Route struct {
 	Path    string
@@ -11,6 +15,14 @@ type Route struct {
 }
 
 type Router struct {
-	Routes []*Route
 	Entry  string
+	Routes []*Route
+	Stack  []typing.Middleware
+}
+
+func (r Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+}
+
+type Hippocampus interface {
+	ServeHTTP(w http.ResponseWriter, r *http.Request)
 }
