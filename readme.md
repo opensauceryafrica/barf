@@ -2,6 +2,8 @@
 
 BARF is a small and unobtrusive framework for building JSON-based web APIs on REST or GraphQL-based architectures. It is implemented such that getting started is easy and quick, but it is also flexible enough to allow for more complex use cases.
 
+![image](https://user-images.githubusercontent.com/59074379/236047064-a16887b2-31f6-4e66-bf6b-340fa1b18a53.png)
+
 ## Installation
 
 ```shell
