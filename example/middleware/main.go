@@ -43,25 +43,25 @@ func main() {
 	// apply middleware
 	barf.Hippocampus().Hijack(func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			log.Println("before 0")
+			barf.Logger().Info("before 0")
 			h.ServeHTTP(w, r)
-			log.Println("after 0")
+			barf.Logger().Info("after 0")
 		})
 	})
 
 	barf.Hippocampus().Hijack(func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			log.Println("before 1")
+			barf.Logger().Info("before 1")
 			h.ServeHTTP(w, r)
-			log.Println("after 1")
+			barf.Logger().Info("after 1")
 		})
 	})
 
 	barf.Hippocampus().Hijack(func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			log.Println("before 2")
+			barf.Logger().Info("before 2")
 			h.ServeHTTP(w, r)
-			log.Println("after 2")
+			barf.Logger().Info("after 2")
 		})
 	})
 

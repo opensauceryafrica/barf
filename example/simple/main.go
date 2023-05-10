@@ -1,8 +1,8 @@
 package main
 
 import (
-	"log"
 	"net/http"
+	"os"
 
 	"github.com/opensaucerer/barf"
 )
@@ -21,6 +21,8 @@ func main() {
 
 	// create & start server
 	if err := barf.Beck(); err != nil {
-		log.Fatal(err)
+		// barf exposes a logger instance
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
 	}
 }
