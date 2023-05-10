@@ -4,6 +4,7 @@ package env
 
 import (
 	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/opensaucerer/barf/constant"
@@ -41,7 +42,34 @@ func append(env reflect.Value) {
 		// check if key is set
 		if val, ok := barfenv["key"]; ok {
 			// append environment variable to constant.Env
-			t.Field(i).SetString(Get(val))
+			switch t.Field(i).Kind() {
+			case reflect.String:
+				t.Field(i).SetString(Get(val))
+			case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+				integer, err := strconv.ParseInt(Get(val), 10, 64)
+				if err != nil {
+					panic(err)
+				}
+				t.Field(i).SetInt(integer)
+			case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+				integer, err := strconv.ParseUint(Get(val), 10, 64)
+				if err != nil {
+					panic(err)
+				}
+				t.Field(i).SetUint(integer)
+			case reflect.Float32, reflect.Float64:
+				float, err := strconv.ParseFloat(Get(val), 64)
+				if err != nil {
+					panic(err)
+				}
+				t.Field(i).SetFloat(float)
+			case reflect.Bool:
+				boolean, err := strconv.ParseBool(Get(val))
+				if err != nil {
+					panic(err)
+				}
+				t.Field(i).SetBool(boolean)
+			}
 		}
 	}
 }

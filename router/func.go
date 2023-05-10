@@ -27,7 +27,7 @@ TLoop:
 			match := true
 		VLoop:
 			for i, variable := range variables {
-				if variable != paths[i] && variable[0] != ':' {
+				if variable != paths[i] && (len(variable) == 0 || variable[0] != ':') {
 					match = false
 					break VLoop
 				}
