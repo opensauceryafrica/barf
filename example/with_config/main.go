@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"os"
 
@@ -16,7 +15,8 @@ func main() {
 		Logging:  &allow, // enable request logging
 		Recovery: &allow, // enable panic recovery so barf returns a 500 error instead of crashing
 	}); err != nil {
-		log.Fatal(err)
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
 	}
 
 	barf.Get("/", func(w http.ResponseWriter, r *http.Request) {

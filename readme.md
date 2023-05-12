@@ -12,6 +12,8 @@ go get github.com/opensaucerer/barf
 
 ## Usage
 
+For a comprehensive overview on how to use barf, please refer to the [example](./example) folder and its sub folders.
+
 ### A simple BARF REST API
 
 ```go
@@ -38,7 +40,9 @@ func main() {
 
 	// create & start server
 	if err := barf.Beck(); err != nil {
-		log.Fatal(err)
+		// barf exposes a logger instance
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
 	}
 }
 ```
@@ -63,7 +67,8 @@ func main() {
 		Logging:  &allow,  // enable request logging
 		Recovery: &allow, // enable panic recovery so barf returns a 500 error instead of crashing
 	}); err != nil {
-		log.Fatal(err)
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
 	}
 
 	barf.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -76,7 +81,8 @@ func main() {
 
 	// start barf server
 	if err := barf.Beck(); err != nil {
-		log.Fatal(err)
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
 	}
 }
 ```
@@ -104,7 +110,8 @@ func main() {
 
 	// you can use barf to dynamically load environment variables into a struct
 	if err := barf.Env(env, "example/.env"); err != nil {
-		log.Fatal(err)
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
 	}
 
 	// create server
@@ -114,7 +121,8 @@ func main() {
 		Logging:  &allow,
 		Recovery: &allow,
 	}); err != nil {
-		log.Fatal(err)
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
 	}
 
 	barf.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -127,7 +135,8 @@ func main() {
 
 	// start server - create & start server
 	if err := barf.Beck(); err != nil {
-		log.Fatal(err)
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
 	}
 }
 ```
@@ -155,7 +164,8 @@ func main() {
 
 	// load environment variables
 	if err := barf.Env(env, "example/.env"); err != nil {
-		log.Fatal(err)
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
 	}
 
 	// create server
@@ -165,7 +175,8 @@ func main() {
 		Logging:  &allow,
 		Recovery: &allow,
 	}); err != nil {
-		log.Fatal(err)
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
 	}
 
 	barf.Post("/:username", func(w http.ResponseWriter, r *http.Request) {
@@ -197,7 +208,8 @@ func main() {
 
 	// start server - create & start server
 	if err := barf.Beck(); err != nil {
-		log.Fatal(err)
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
 	}
 }
 
@@ -223,7 +235,8 @@ func main() {
 		Logging:  &allow,  // enable request logging
 		Recovery: &allow, // enable panic recovery so barf returns a 500 error instead of crashing
 	}); err != nil {
-		log.Fatal(err)
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
 	}
 
 	// apply global middleware to all routes - middleware is applied in the order it is added and must be added before the call to barf.Beck()
@@ -255,7 +268,76 @@ func main() {
 
 	// start barf server
 	if err := barf.Beck(); err != nil {
-		log.Fatal(err)
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
 	}
 }
 ```
+
+### BARF with subrouters
+
+```go
+package main
+
+import (
+	"net/http"
+	"os"
+
+	"github.com/opensaucerer/barf"
+)
+
+func main() {
+	// create server
+	allow := true
+	if err := barf.Stark(barf.Augment{
+		Port:     "5000",
+		Logging:  &allow, // enable request logging
+		Recovery: &allow, // enable panic recovery so barf returns a 500 error instead of crashing
+	}); err != nil {
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
+	}
+
+	barf.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{
+			Status:  true,
+			Data:    nil,
+			Message: "Hello World",
+		})
+	})
+
+	// create a subrouter (retroframe)
+	s := barf.RetroFrame("/api/v1")
+	s.Get("/about", func(w http.ResponseWriter, r *http.Request) {
+		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{
+			Status:  true,
+			Data:    nil,
+			Message: "About",
+		})
+	})
+
+	// start barf server
+	if err := barf.Beck(); err != nil {
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
+	}
+}
+```
+
+# Contributing
+
+Barf is an open source project and we welcome contributions of all kinds to help improve the project. Please read our [contributing guide](./contributing.md) to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes to Barf.
+
+For a starting point on features Barf currently lacks, see the [issues page](https://github.com/opensaucerer/barf/issues).
+
+# License
+
+Barf is [MIT licensed](./LICENSE).
+
+# Contributors
+
+<a href="https://github.com/opensaucerer/barf/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=opensaucerer/barf" />
+</a>
+
+Made with [contrib.rocks](https://contrib.rocks).

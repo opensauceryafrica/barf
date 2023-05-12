@@ -1,8 +1,8 @@
 package main
 
 import (
-	"log"
 	"net/http"
+	"os"
 
 	"github.com/opensaucerer/barf"
 )
@@ -18,7 +18,8 @@ func main() {
 
 	// load environment variables
 	if err := barf.Env(env, "example/.env"); err != nil {
-		log.Fatal(err)
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
 	}
 
 	// create server
@@ -37,7 +38,8 @@ func main() {
 			},
 		},
 	}); err != nil {
-		log.Fatal(err)
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
 	}
 
 	barf.Get("/dashboard/:username", func(w http.ResponseWriter, r *http.Request) {
@@ -52,6 +54,7 @@ func main() {
 
 	// start server - create & start server
 	if err := barf.Beck(); err != nil {
-		log.Fatal(err)
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
 	}
 }
