@@ -13,15 +13,15 @@ func (r *Route) Func() {
 		r.Path = "/"
 	}
 	// if path found in top level of table
-	if table[r.Path] != nil && table[r.Path][r.Method] != nil {
-		r.Handler = table[r.Path][r.Method]
+	if rtable[r.Path] != nil && rtable[r.Path][r.Method] != nil {
+		*r = *rtable[r.Path][r.Method]
 		return
 	}
 
 	// handle path with parameters
 	paths := strings.Split(r.Path, "/")
 TLoop:
-	for path, methods := range table {
+	for path, methods := range rtable {
 		variables := strings.Split(path, "/")
 		if len(paths) == len(variables) && methods[r.Method] != nil {
 			match := true
@@ -33,10 +33,16 @@ TLoop:
 				}
 			}
 			if match {
-				r.Handler = methods[r.Method]
-				r.Params = Params(r.Path, path)
+				params := Params(r.Path, path)
+				*r = *methods[r.Method]
+				r.Params = params
 				break TLoop
 			}
 		}
 	}
+}
+
+// Reframe retrieves the SubRoute for the given route from the stable
+func (r *Route) Reframe() *SubRoute {
+	return stable[r.RetroFrameEntry]
 }

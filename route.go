@@ -25,3 +25,6 @@ var Delete = router.Delete
 
 // Any registers a route with all HTTP methods
 var Any = router.Any
+
+// RetroFrame returns a new RetroFrame instance registered against the given entry path.
+var RetroFrame = router.RetroFrame

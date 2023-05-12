@@ -1,7 +1,6 @@
 package router
 
 import (
-	"net/http"
 	"regexp"
 )
 
@@ -12,8 +11,8 @@ func (r *Route) Register() {
 	if r.Path == "" {
 		r.Path = "/"
 	}
-	if table[r.Path] == nil {
-		table[r.Path] = make(map[string]func(http.ResponseWriter, *http.Request))
+	if rtable[r.Path] == nil {
+		rtable[r.Path] = make(map[string]*Route)
 	}
-	table[r.Path][r.Method] = r.Handler
+	rtable[r.Path][r.Method] = r
 }

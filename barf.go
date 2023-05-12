@@ -15,7 +15,7 @@ import (
 
 	"github.com/opensaucerer/barf/constant"
 	logger "github.com/opensaucerer/barf/log"
-	"github.com/opensaucerer/barf/middleware"
+	"github.com/opensaucerer/barf/router"
 	"github.com/opensaucerer/barf/server"
 	"github.com/opensaucerer/barf/typing"
 )
@@ -29,11 +29,11 @@ func createServer(a typing.Augment) error {
 
 	// wrap router into logger middleware
 	if *server.Augment.Logging {
-		r = middleware.Logger(r)
+		r = logger.Morgan(r)
 	}
 
 	// wrap router into router middleware
-	r = middleware.Router(server.JSON)(r)
+	r = router.Router(server.JSON)(r)
 
 	// wrap router into cors middleware
 	// r = middleware.CORS(middleware.Prepare(*server.Augment.CORS))(r)
@@ -44,8 +44,8 @@ func createServer(a typing.Augment) error {
 	// }
 
 	// create barf for hijacking
-	server.Barf.Router = r
-	server.Barf.Stack = []typing.Middleware{}
+	router.Barf.Router = r
+	router.Barf.Stack = []typing.Middleware{}
 
 	// create server
 	server.HTTP = &http.Server{

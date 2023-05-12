@@ -3,7 +3,6 @@ package server
 import (
 	"net/http"
 
-	"github.com/opensaucerer/barf/router"
 	"github.com/opensaucerer/barf/typing"
 )
 
@@ -15,12 +14,4 @@ var (
 	Augment *typing.Augment
 
 	Beckoned *bool
-
-	Barf *(struct {
-		Router router.Hippocampus
-		Stack  []typing.Middleware
-	}) = &struct {
-		Router router.Hippocampus
-		Stack  []typing.Middleware
-	}{}
 )

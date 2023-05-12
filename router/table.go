@@ -1,5 +1,5 @@
 package router
 
-import "net/http"
+var rtable = map[string]map[string]*Route{}
 
-var table = map[string]map[string]func(http.ResponseWriter, *http.Request){}
+var stable = map[string]*SubRoute{}
