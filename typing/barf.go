@@ -22,6 +22,8 @@ type Augment struct {
 	// ShutdownTimeout is the time in seconds to wait for the server to shutdown gracefully
 	// default is 5 seconds
 	ShutdownTimeout int
+	// Host is the host for the server to listen on
+	Host string
 	// Port is the port for the server to listen on
 	Port string
 	// ReadHeaderTimeout is the amount of time allowed to read
