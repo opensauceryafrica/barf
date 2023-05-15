@@ -25,8 +25,11 @@ const (
 	// request line. It does not limit the size of the request body.
 	MaxHeaderBytes = 1 << 20 // 1 MB
 
+	// Host is the host for the server to listen on
+	Host = ""
+
 	// Port is the port for the server to listen on
-	Port = ":21186"
+	Port = "21186"
 
 	// EnvPath is the path to the environment variables file
 	EnvPath = ".env"

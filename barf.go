@@ -1,4 +1,6 @@
-/* package barf
+/*
+	package barf
+
 Basically, A Remarkable Framework!
 */
 package barf
@@ -49,7 +51,7 @@ func createServer(a typing.Augment) error {
 
 	// create server
 	server.HTTP = &http.Server{
-		Addr:              server.Augment.Port,
+		Addr:              fmt.Sprintf("%s:%s", server.Augment.Host, server.Augment.Port),
 		ReadTimeout:       time.Duration(server.Augment.ReadTimeout) * time.Second,
 		WriteTimeout:      time.Duration(server.Augment.WriteTimeout) * time.Second,
 		MaxHeaderBytes:    server.Augment.MaxHeaderBytes,
@@ -80,6 +82,7 @@ func Stark(augmentation ...typing.Augment) error {
 		ReadHeaderTimeout: constant.ReadTimeout,
 		WriteTimeout:      constant.WriteTimeout,
 		ShutdownTimeout:   constant.ShutdownTimeout,
+		Host:              constant.Host,
 		Port:              constant.Port,
 		Logging:           &constant.Logging,
 		Recovery:          &constant.Recovery,
@@ -107,8 +110,11 @@ func Stark(augmentation ...typing.Augment) error {
 		if aug.WriteTimeout != 0 {
 			augu.WriteTimeout = aug.WriteTimeout
 		}
+		if aug.Host != "" {
+			augu.Host = aug.Host
+		}
 		if aug.Port != "" {
-			augu.Port = fmt.Sprintf(":%s", aug.Port)
+			augu.Port = aug.Port
 		}
 		if aug.ReadHeaderTimeout != 0 {
 			augu.ReadHeaderTimeout = aug.ReadHeaderTimeout
@@ -147,7 +153,7 @@ func Beck() error {
 		shutdown()
 	}()
 	// start server
-	logger.Info(fmt.Sprintf("BARF server started at http://localhost%s", server.Augment.Port))
+	logger.Info(fmt.Sprintf("BARF server started at http://%s:%s", server.Augment.Host, server.Augment.Port))
 	if err := server.HTTP.ListenAndServe(); err != nil {
 		server.Beckoned = nil
 		return err
