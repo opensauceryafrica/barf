@@ -1,6 +1,4 @@
-/*
-	package barf
-
+/* package barf
 Basically, A Remarkable Framework!
 */
 package barf
