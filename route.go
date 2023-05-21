@@ -28,3 +28,6 @@ var Any = router.Any
 
 // RetroFrame returns a new RetroFrame instance registered against the given entry path.
 var RetroFrame = router.RetroFrame
+
+// SubRoute is the type of a barf RetroFrame instance.
+type SubRoute = router.SubRoute
