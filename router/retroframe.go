@@ -23,7 +23,7 @@ func RetroFrame(path string) *SubRoute {
 // RetroFrame returns a new subrouter instance registered against the given entry path and the RetroFrame instance it is called on.
 func (r *SubRoute) RetroFrame(path string) *SubRoute {
 	s := &SubRoute{
-		entry:  r.entry + "/" + regexp.MustCompile("^/+|/+$").ReplaceAllString(path, ""),
+		entry:  regexp.MustCompile("^/+|/+$").ReplaceAllString(r.entry+"/"+regexp.MustCompile("^/+|/+$").ReplaceAllString(path, ""), ""),
 		routes: []*Route{},
 		stack:  []typing.Middleware{},
 	}
