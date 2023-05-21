@@ -7,13 +7,14 @@ import (
 
 type B []byte
 
+// Body prepares the barf request with the request body for further formatting
 func Body(r *http.Request) []byte {
 	body := make([]byte, r.ContentLength)
 	r.Body.Read(body)
 	return body
 }
 
-// JSON formats the request body as map[string]interface{}.
+// JSON formats the body as map[string]interface{}.
 // It returns an error if the body is not a valid JSON.
 func (b B) JSON() (map[string]interface{}, error) {
 	var data map[string]interface{}

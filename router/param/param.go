@@ -9,6 +9,7 @@ import (
 
 type P []byte
 
+// Params prepares the barf request with the request params for further formatting
 func Params(r *http.Request) []byte {
 	p := r.Context().Value(typing.ParamsCtxKey{})
 	if p == nil {

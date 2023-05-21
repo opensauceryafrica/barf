@@ -52,7 +52,7 @@ func main() {
 	})
 
 	// create a subrouter (retroframe)
-	var r *barf.SubRoute = barf.RetroFrame("/api/v1")
+	var r *barf.SubRoute = barf.RetroFrame("/api")
 
 	// apply middleware to subrouter. note that the only difference between this and global middlewares is that you need to pass the
 	barf.Hippocampus(r).Hijack(func(h http.Handler) http.Handler {
@@ -73,7 +73,7 @@ func main() {
 
 	// create another subrouter (retroframe)
 	// note that although the path is the same, the subroute is different and won't inherit the middleware from the previous subroute
-	s := barf.RetroFrame("/api/v1")
+	s := barf.RetroFrame("/api").RetroFrame("/v1")
 	s.Get("/about", func(w http.ResponseWriter, r *http.Request) {
 		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{
 			Status:  true,

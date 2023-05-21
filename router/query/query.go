@@ -7,6 +7,7 @@ import (
 
 type Q []byte
 
+// Query prepares the barf request with the request query for further formatting
 func Query(r *http.Request) []byte {
 	q := make(map[string]string)
 	for k, v := range r.URL.Query() {

@@ -20,6 +20,18 @@ func RetroFrame(path string) *SubRoute {
 	return s
 }
 
+// RetroFrame returns a new subrouter instance registered against the given entry path and the RetroFrame instance it is called on.
+func (r *SubRoute) RetroFrame(path string) *SubRoute {
+	s := &SubRoute{
+		entry:  r.entry + "/" + regexp.MustCompile("^/+|/+$").ReplaceAllString(path, ""),
+		routes: []*Route{},
+		stack:  []typing.Middleware{},
+	}
+	s.key = fmt.Sprintf("%p", s)
+	stable[s.key] = s
+	return s
+}
+
 // Get registers a route with the GET HTTP method against the path of the RetroFrame router instance.
 func (r *SubRoute) Get(path string, handler func(http.ResponseWriter, *http.Request)) {
 	fget(fmt.Sprintf("/%s/%s", r.entry, regexp.MustCompile("^/+|/+$").ReplaceAllString(path, "")), handler, r.key)
