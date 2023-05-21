@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io"
 	"net/http"
 	"os"
 
@@ -24,12 +23,10 @@ func main() {
 	}
 
 	// create server
-	allow := true
-	disallow := false
+	logging := true
 	if err := barf.Stark(barf.Augment{
-		Port:     env.Port,
-		Logging:  &allow, // enable request logging
-		Recovery: &disallow,
+		Port:    env.Port,
+		Logging: &logging, // enable request logging
 		CORS: &barf.CORS{
 			AllowedOrigins: []string{"https://*.google.com"},
 			MaxAge:         3600,
@@ -45,34 +42,70 @@ func main() {
 		os.Exit(1)
 	}
 
+	// apply middleware to all routes
+	barf.Hippocampus().Hijack(func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			barf.Logger().Info("before 1")
+			h.ServeHTTP(w, r)
+			barf.Logger().Info("after 1")
+		})
+	})
+
 	// create a subrouter (retroframe)
-	s := barf.RetroFrame("/api").RetroFrame("/v1")
-	s.Get("/about", func(w http.ResponseWriter, r *http.Request) {
+	var r *barf.SubRoute = barf.RetroFrame("/api")
 
-		message := "About"
+	// apply middleware to subrouter. note that the only difference between this and global middlewares is that you need to pass the
+	barf.Hippocampus(r).Hijack(func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			barf.Logger().Info("sub before api")
+			h.ServeHTTP(w, r)
+			barf.Logger().Info("sub after api")
+		})
+	})
 
-		// parsing form-data
-		body, err := barf.Request(r).Form().Body().JSON()
-		if err != nil {
-			message = err.Error()
-		}
-
-		head := barf.Request(r).Form().File().Get("file")
-		file, _ := head.Open()
-		defer file.Close()
-
-		// save file
-		f, err := os.OpenFile(head.Filename, os.O_WRONLY|os.O_CREATE, 0666)
-		if err != nil {
-			message = err.Error()
-		}
-		defer f.Close()
-		io.Copy(f, file)
-
+	r.Get("/home", func(w http.ResponseWriter, r *http.Request) {
 		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{
 			Status:  true,
-			Data:    body,
-			Message: message,
+			Data:    nil,
+			Message: "Home",
+		})
+	})
+
+	// create another subrouter (retroframe)
+	// note that although the path is the same, the subroute is different and won't inherit the middleware from the previous subroute
+	s := barf.RetroFrame("/api").RetroFrame("/v1")
+	s.Get("/about", func(w http.ResponseWriter, r *http.Request) {
+		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{
+			Status:  true,
+			Data:    nil,
+			Message: "About",
+		})
+	})
+
+	// create another subrouter from the previous subrouter
+	// note that, in this case, the subroute will inherit the middleware from the previous subroute
+	n := r.RetroFrame("/v2")
+	barf.Hippocampus(n).Hijack(func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			barf.Logger().Info("sub before v2")
+			h.ServeHTTP(w, r)
+			barf.Logger().Info("sub after v2")
+		})
+	})
+	n.Get("/contact", func(w http.ResponseWriter, r *http.Request) {
+		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{
+			Status:  true,
+			Data:    nil,
+			Message: "Contact",
+		})
+	})
+
+	m := n.RetroFrame("/v3")
+	m.Get("/contact", func(w http.ResponseWriter, r *http.Request) {
+		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{
+			Status:  true,
+			Data:    nil,
+			Message: "Contact",
 		})
 	})
 

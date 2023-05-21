@@ -25,7 +25,7 @@ func (r *SubRoute) RetroFrame(path string) *SubRoute {
 	s := &SubRoute{
 		entry:  regexp.MustCompile("^/+|/+$").ReplaceAllString(r.entry+"/"+regexp.MustCompile("^/+|/+$").ReplaceAllString(path, ""), ""),
 		routes: []*Route{},
-		stack:  []typing.Middleware{},
+		stack:  append([]typing.Middleware{}, r.stack...),
 	}
 	s.key = fmt.Sprintf("%p", s)
 	stable[s.key] = s

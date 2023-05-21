@@ -3,7 +3,7 @@
 BARF is a small and unobtrusive framework for building JSON-based web APIs on REST or GraphQL-based architectures. It is implemented such that getting started is easy and quick, but it is also flexible enough to allow for more complex use cases.
 
 - No application instance
-- No bullsh*t context
+- No bullsh\*t context
 - ...and no re-inventing the wheel
 
 It’s just what you need being provided to you in an unobtrusive way.
@@ -219,6 +219,85 @@ func main() {
 	}
 }
 
+```
+
+### BARF with multipart/form-data
+
+```go
+package main
+
+import (
+	"io"
+	"net/http"
+	"os"
+
+	"github.com/opensaucerer/barf"
+)
+
+func main() {
+
+	type Env struct {
+		// Port for the server to listen on
+		Port string `barfenv:"key=PORT;required=true"`
+	}
+
+	env := new(Env) // global environment variable
+
+	// load environment variables
+	if err := barf.Env(env, "example/.env"); err != nil {
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
+	}
+
+	// create server
+	allow := true
+	disallow := false
+	if err := barf.Stark(barf.Augment{
+		Port:     env.Port,
+		Logging:  &allow, // enable request logging
+		Recovery: &disallow,
+	}); err != nil {
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
+	}
+
+	// create a subrouter (retroframe)
+	s := barf.RetroFrame("/api").RetroFrame("/v1")
+	s.Get("/about", func(w http.ResponseWriter, r *http.Request) {
+
+		message := "About"
+
+		// parsing form-data
+		body, err := barf.Request(r).Form().Body().JSON()
+		if err != nil {
+			message = err.Error()
+		}
+
+		head := barf.Request(r).Form().File().Get("file")
+		file, _ := head.Open()
+		defer file.Close()
+
+		// save file
+		f, err := os.OpenFile(head.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+		if err != nil {
+			message = err.Error()
+		}
+		defer f.Close()
+		io.Copy(f, file)
+
+		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{
+			Status:  true,
+			Data:    body,
+			Message: message,
+		})
+	})
+
+	// start server - create & start server
+	if err := barf.Beck(); err != nil {
+		barf.Logger().Error(err.Error())
+		os.Exit(1)
+	}
+}
 ```
 
 ### BARF with custom middleware

@@ -82,6 +82,17 @@ func main() {
 		})
 	})
 
+	// create another subrouter from the previous subrouter
+	// note that, in this case, the subroute will inherit the middleware from the previous subroute
+	n := r.RetroFrame("/v2")
+	n.Get("/contact", func(w http.ResponseWriter, r *http.Request) {
+		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{
+			Status:  true,
+			Data:    nil,
+			Message: "Contact",
+		})
+	})
+
 	// start server - create & start server
 	if err := barf.Beck(); err != nil {
 		barf.Logger().Error(err.Error())
