@@ -42,6 +42,13 @@ type Augment struct {
 	Recovery *bool
 	// CORS is the configuration for Cross-Origin Resource Sharing
 	CORS *CORS
+	// UseHTTPS enable barf expose an https instance of itself.
+	// This option also requires both SSLCertfile & SSLKeyFile to be present.
+	UseHTTPS bool
+	// SSLCertFile requires for https configuration
+	SSLCertFile string
+	// SSLKeyFile required for https configuration
+	SSLKeyFile string
 }
 
 // CORS holds configuration for Cross-Origin Resource Sharing

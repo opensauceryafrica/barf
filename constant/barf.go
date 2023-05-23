@@ -33,6 +33,9 @@ const (
 
 	// EnvPath is the path to the environment variables file
 	EnvPath = ".env"
+
+	// UseHTTPS enables barf use https by default. (Default value is false)
+	UseHTTPS = false
 )
 
 var (

@@ -1,4 +1,6 @@
-/* package barf
+/*
+	package barf
+
 Basically, A Remarkable Framework!
 */
 package barf
@@ -82,6 +84,7 @@ func Stark(augmentation ...typing.Augment) error {
 		ShutdownTimeout:   constant.ShutdownTimeout,
 		Host:              constant.Host,
 		Port:              constant.Port,
+		UseHTTPS:          constant.UseHTTPS,
 		Logging:           &constant.Logging,
 		Recovery:          &constant.Recovery,
 		CORS:              &typing.CORS{},
@@ -126,6 +129,12 @@ func Stark(augmentation ...typing.Augment) error {
 		if aug.CORS != nil {
 			augu.CORS = aug.CORS
 		}
+		if aug.UseHTTPS {
+			if aug.SSLCertFile == "" || aug.SSLKeyFile == "" {
+				return fmt.Errorf("error: Stark() enabling UseHTTPS requires SSLCertFile & SSLKeyFile")
+			}
+		}
+		augu.UseHTTPS = aug.UseHTTPS
 	}
 	// make config global
 	server.Augment = &augu
@@ -150,6 +159,17 @@ func Beck() error {
 		server.Beckoned = &valid
 		shutdown()
 	}()
+
+	// start server with https enabled
+	if server.Augment.UseHTTPS {
+		logger.Info(fmt.Sprintf("BARF server started at https://%s:%s", server.Augment.Host, server.Augment.Port))
+		err := server.HTTP.ListenAndServeTLS(server.Augment.SSLCertFile, server.Augment.SSLKeyFile)
+		if err != nil {
+			server.Beckoned = nil
+			return err
+		}
+	}
+
 	// start server
 	logger.Info(fmt.Sprintf("BARF server started at http://%s:%s", server.Augment.Host, server.Augment.Port))
 	if err := server.HTTP.ListenAndServe(); err != nil {
