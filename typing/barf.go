@@ -42,6 +42,14 @@ type Augment struct {
 	Recovery *bool
 	// CORS is the configuration for Cross-Origin Resource Sharing
 	CORS *CORS
+	// UseHTTPS specifies that all barf connections listen on the TCP network address for inbound HTTPS requests.
+	UseHTTPS bool
+	// SSLCertFile is the path to the certificate file.
+	//
+	// If the certificate is signed by a certificate authority, the SSLCertfFile should be the concatenation of the server's certificate, any intermediates, and the CA's certificate.
+	SSLCertFile string
+	// SSLKeyFile is the path to the private key of the certificate in use.
+	SSLKeyFile string
 }
 
 // CORS holds configuration for Cross-Origin Resource Sharing
