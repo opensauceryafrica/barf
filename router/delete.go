@@ -1,13 +1,18 @@
 package router
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/opensaucerer/barf/typing"
+)
 
 // Delete registers a route with the DELETE HTTP method
-func Delete(path string, handler func(http.ResponseWriter, *http.Request)) {
+func Delete(path string, handler func(http.ResponseWriter, *http.Request), m ...typing.Middleware) {
 	route := &Route{
 		Path:    path,
 		Method:  delete,
 		Handler: handler,
+		stack:   m,
 	}
 	route.Register()
 }

@@ -1,13 +1,18 @@
 package router
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/opensaucerer/barf/typing"
+)
 
 // Patch registers a route with the PATCH HTTP method
-func Patch(path string, handler func(http.ResponseWriter, *http.Request)) {
+func Patch(path string, handler func(http.ResponseWriter, *http.Request), m ...typing.Middleware) {
 	route := &Route{
 		Path:    path,
 		Method:  patch,
 		Handler: handler,
+		stack:   m,
 	}
 	route.Register()
 }

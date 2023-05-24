@@ -8,13 +8,6 @@ import (
 )
 
 func main() {
-	middleware1 := func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			barf.Logger().Info("route specific works before")
-			next.ServeHTTP(w, r)
-			barf.Logger().Info("route specific works after")
-		})
-	}
 	// barf tries to be as unobtrusive as possible, so your route handlers still
 	// inherit the standard http.ResponseWriter and *http.Request parameters
 	barf.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -23,7 +16,7 @@ func main() {
 			Data:    nil,
 			Message: "Hello World",
 		})
-	}, middleware1)
+	})
 
 	// create & start server
 	if err := barf.Beck(); err != nil {
