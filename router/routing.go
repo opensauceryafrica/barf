@@ -14,6 +14,7 @@ type Route struct {
 	Params          map[string]string
 	RetroFrame      bool   // true for routes registered on a SubRoute
 	RetroFrameEntry string // entry path of the SubRoute
+	stack           []typing.Middleware
 }
 
 type SubRoute struct {

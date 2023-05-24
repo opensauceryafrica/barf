@@ -42,6 +42,13 @@ func Router(respond func(w http.ResponseWriter, status bool, statusCode int, mes
 					}
 				}
 
+				// call route specific middleware(s)
+				if len(route.stack) > 0 {
+					for i := range route.stack {
+						sh = route.stack[len(route.stack)-1-i](sh)
+					}
+				}
+
 				// call route handler
 				route.Handler(w, r.WithContext(ctx))
 			}

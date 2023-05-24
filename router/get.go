@@ -1,13 +1,18 @@
 package router
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/opensaucerer/barf/typing"
+)
 
 // Get registers a route with the GET HTTP method
-func Get(path string, handler func(http.ResponseWriter, *http.Request)) {
+func Get(path string, handler func(http.ResponseWriter, *http.Request), m ...typing.Middleware) {
 	route := &Route{
 		Path:    path,
 		Method:  get,
 		Handler: handler,
+		stack:   m,
 	}
 	route.Register()
 }
