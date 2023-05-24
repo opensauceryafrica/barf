@@ -18,13 +18,14 @@ func Put(path string, handler func(http.ResponseWriter, *http.Request), m ...typ
 }
 
 // fput registers a route with the PUT HTTP method and sets the RetroFrame flag
-func fput(path string, handler func(http.ResponseWriter, *http.Request), entry string) {
+func fput(path string, handler func(http.ResponseWriter, *http.Request), entry string, m ...typing.Middleware) {
 	route := &Route{
 		Path:            path,
 		Method:          put,
 		Handler:         handler,
 		RetroFrame:      true,
 		RetroFrameEntry: entry,
+		stack:           m,
 	}
 	route.Register()
 }

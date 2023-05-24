@@ -94,6 +94,16 @@ func main() {
 		})
 	}, middleware)
 
+	// single route middlewares on subroutes route
+	s := barf.RetroFrame("/app")
+	s.Get("/dashboard", func(w http.ResponseWriter, r *http.Request) {
+		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{
+			Status:  true,
+			Data:    nil,
+			Message: "This also works on subroutes routes",
+		})
+	}, middleware)
+
 	// start server - create & start server
 	if err := barf.Beck(); err != nil {
 		barf.Logger().Error(err.Error())
