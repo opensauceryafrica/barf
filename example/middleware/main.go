@@ -77,6 +77,23 @@ func main() {
 		})
 	})
 
+	// single route middleware
+	middleware := func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			barf.Logger().Info("single route before 3")
+			next.ServeHTTP(w, r)
+			barf.Logger().Info("single route after 3")
+		})
+	}
+
+	barf.Get("/dashboard/settings", func(w http.ResponseWriter, r *http.Request) {
+		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{
+			Status:  true,
+			Data:    nil,
+			Message: "Dashboard settings",
+		})
+	}, middleware)
+
 	// start server - create & start server
 	if err := barf.Beck(); err != nil {
 		barf.Logger().Error(err.Error())
