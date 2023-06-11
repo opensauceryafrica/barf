@@ -127,14 +127,6 @@ func main() {
 		})
 	})
 
-	x.Get("/contactz", func(w http.ResponseWriter, r *http.Request) {
-		barf.Response(w).Status(http.StatusOK).JSON(barf.Res{
-			Status:  true,
-			Data:    nil,
-			Message: "Contactz version 3",
-		})
-	})
-
 	// start server - create & start server
 	if err := barf.Beck(); err != nil {
 		barf.Logger().Error(err.Error())
