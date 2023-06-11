@@ -82,6 +82,22 @@ func main() {
 		})
 	})
 
+	middleware := func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			barf.Logger().Info("This is a middleware for the contact route")
+			next.ServeHTTP(w, r)
+			barf.Logger().Info("This is a middleware for the contact route after")
+		})
+	}
+
+	middleware2 := func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			barf.Logger().Info("This is the second middleware for the contact route")
+			next.ServeHTTP(w, r)
+			barf.Logger().Info("This is the second middleware for the contact route after")
+		})
+	}
+
 	// create another subrouter from the previous subrouter
 	// note that, in this case, the subroute will inherit the middleware from the previous subroute
 	n := r.RetroFrame("/v2")
@@ -91,7 +107,7 @@ func main() {
 			Data:    nil,
 			Message: "Contact",
 		})
-	})
+	}).Use(middleware, middleware2)
 
 	// start server - create & start server
 	if err := barf.Beck(); err != nil {
