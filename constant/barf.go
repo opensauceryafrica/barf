@@ -26,7 +26,7 @@ const (
 	MaxHeaderBytes = 1 << 20 // 1 MB
 
 	// Host is the host for the server to listen on
-	Host = "127.0.0.1"
+	Host = ""
 
 	// Port is the port for the server to listen on
 	Port = "21186"
