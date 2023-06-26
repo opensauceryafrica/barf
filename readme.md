@@ -67,11 +67,10 @@ import (
 
 func main() {
 	// create server
-	allow := true
 	if err := barf.Stark(barf.Augment{
 		Port:     "5000",
-		Logging:  &allow,  // enable request logging
-		Recovery: &allow, // enable panic recovery so barf returns a 500 error instead of crashing
+		Logging:  barf.Allow(),  // enable request logging
+		Recovery: barf.Allow(), // enable panic recovery so barf returns a 500 error instead of crashing
 	}); err != nil {
 		barf.Logger().Error(err.Error())
 		os.Exit(1)
@@ -121,11 +120,10 @@ func main() {
 	}
 
 	// create server
-	allow := true
 	if err := barf.Stark(barf.Augment{
 		Port:     env.Port,
-		Logging:  &allow,
-		Recovery: &allow,
+		Logging:  barf.Allow(),
+		Recovery: barf.Allow(),
 	}); err != nil {
 		barf.Logger().Error(err.Error())
 		os.Exit(1)
@@ -175,11 +173,10 @@ func main() {
 	}
 
 	// create server
-	allow := true
 	if err := barf.Stark(barf.Augment{
 		Port:     env.Port,
-		Logging:  &allow,
-		Recovery: &allow,
+		Logging:  barf.Allow(),
+		Recovery: barf.Allow(),
 	}); err != nil {
 		barf.Logger().Error(err.Error())
 		os.Exit(1)
@@ -250,12 +247,10 @@ func main() {
 	}
 
 	// create server
-	allow := true
-	disallow := false
 	if err := barf.Stark(barf.Augment{
 		Port:     env.Port,
-		Logging:  &allow, // enable request logging
-		Recovery: &disallow,
+		Logging:  barf.Allow(), // enable request logging
+		Recovery: barf.Disallow(),
 	}); err != nil {
 		barf.Logger().Error(err.Error())
 		os.Exit(1)
@@ -314,11 +309,10 @@ import (
 
 func main() {
 	// create server
-	allow := true
 	if err := barf.Stark(barf.Augment{
 		Port:     "5000",
-		Logging:  &allow,  // enable request logging
-		Recovery: &allow, // enable panic recovery so barf returns a 500 error instead of crashing
+		Logging:  barf.Allow(),  // enable request logging
+		Recovery: barf.Allow(), // enable panic recovery so barf returns a 500 error instead of crashing
 	}); err != nil {
 		barf.Logger().Error(err.Error())
 		os.Exit(1)
@@ -373,11 +367,10 @@ import (
 
 func main() {
 	// create server
-	allow := true
 	if err := barf.Stark(barf.Augment{
 		Port:     "5000",
-		Logging:  &allow, // enable request logging
-		Recovery: &allow, // enable panic recovery so barf returns a 500 error instead of crashing
+		Logging:  barf.Allow(), // enable request logging
+		Recovery: barf.Allow(), // enable panic recovery so barf returns a 500 error instead of crashing
 	}); err != nil {
 		barf.Logger().Error(err.Error())
 		os.Exit(1)
@@ -411,7 +404,7 @@ func main() {
 
 # Contributing
 
-Barf is an open source project and we welcome contributions of all kinds to help improve the project. Please read our [contributing guide](./contributing.md) to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes to Barf.
+Barf is an open source project and we welcome contributions of all kinds to help improve the project. Please read our [contributing guide](./contributing.md) to learn about our development process, how to propose bug fixes and improvements, and how to build and test your changes to Barf.
 
 For a starting point on features Barf currently lacks, see the [issues page](https://github.com/opensaucerer/barf/issues).
 

@@ -23,11 +23,10 @@ func main() {
 	}
 
 	// create server
-	allow := true
 	if err := barf.Stark(barf.Augment{
 		Port:     env.Port,
-		Logging:  &allow,
-		Recovery: &allow,
+		Logging:  barf.Allow(),
+		Recovery: barf.Allow(),
 	}); err != nil {
 		barf.Logger().Error(err.Error())
 		os.Exit(1)

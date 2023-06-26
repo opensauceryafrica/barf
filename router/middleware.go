@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/opensaucerer/barf/server"
 	"github.com/opensaucerer/barf/typing"
 )
 
@@ -14,6 +15,11 @@ import (
 func Router(respond func(w http.ResponseWriter, status bool, statusCode int, message string, data map[string]interface{})) func(next http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+			if !server.Loaded(w) {
+				w = server.Load(w)
+			}
+
 			// clone the handler
 			sh := h
 

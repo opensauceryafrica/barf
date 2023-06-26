@@ -24,12 +24,10 @@ func main() {
 	}
 
 	// create server
-	allow := true
-	disallow := false
 	if err := barf.Stark(barf.Augment{
 		Port:     env.Port,
-		Logging:  &allow, // enable request logging
-		Recovery: &disallow,
+		Logging:  barf.Allow(), // enable request logging
+		Recovery: barf.Disallow(),
 		CORS: &barf.CORS{
 			AllowedOrigins: []string{"https://*.google.com"},
 			MaxAge:         3600,
