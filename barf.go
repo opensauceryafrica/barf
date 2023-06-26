@@ -133,6 +133,8 @@ func Stark(augmentation ...typing.Augment) error {
 			if aug.SSLCertFile == "" || aug.SSLKeyFile == "" {
 				return fmt.Errorf("error: Stark() enabling UseHTTPS requires SSLCertFile & SSLKeyFile")
 			}
+			augu.SSLCertFile = aug.SSLCertFile
+			augu.SSLKeyFile = aug.SSLKeyFile
 		}
 		augu.UseHTTPS = aug.UseHTTPS
 	}
