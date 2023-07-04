@@ -2,7 +2,7 @@ package typing
 
 import "net/http"
 
-// Augment holds refrence to all of barf's config
+// Augment holds reference to all of barf's config
 type Augment struct {
 	// MaxHeaderBytes is the maximum number of bytes the server will
 	// read parsing the request header's keys and values, including the
