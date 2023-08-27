@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/opensaucerer/barf/constant"
@@ -11,7 +10,6 @@ import (
 
 // JSON writes a JSON response to the response writer
 func JSON(w http.ResponseWriter, status bool, statusCode int, message string, data map[string]interface{}) {
-	log.Println("JSON", status, statusCode, message, data)
 	Response(w).Status(statusCode).JSON(typing.Response{
 		Status:  status,
 		Message: message,
