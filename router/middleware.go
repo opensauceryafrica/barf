@@ -3,7 +3,6 @@ package router
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -34,7 +33,6 @@ func Router(respond func(w http.ResponseWriter, status bool, statusCode int, mes
 
 			// check if route exists
 			if !route.Exists() {
-				log.Println("route not found", route.Path, route.Method)
 				respond(w, false, http.StatusNotFound, fmt.Sprintf("Path /%s for method %s not found", regexp.MustCompile("^/+|/+$").ReplaceAllString(route.Path, ""), strings.ToUpper(route.Method)), nil)
 			} else {
 				// load params into context if any
