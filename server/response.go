@@ -24,10 +24,12 @@ type response struct {
 
 // JSON writes a JSON response to the response writer
 func (r *response) JSON(data interface{}) {
-	r.rw.Header().Set(constant.ContentType, constant.ApplicationJSON)
-	r.rw.WriteHeader(r.code)
-	json.NewEncoder(r.rw).Encode(data)
-	Write(r.rw) // write to underlying response writer
+	if Loaded(r.rw) && !Written(r.rw) {
+		r.rw.Header().Set(constant.ContentType, constant.ApplicationJSON)
+		r.rw.WriteHeader(r.code)
+		json.NewEncoder(r.rw).Encode(data)
+		Write(r.rw) // write to underlying response writer
+	}
 }
 
 // Status loads a barf response with the given status code
@@ -110,6 +112,13 @@ func Write(w http.ResponseWriter) {
 		}
 		w.(*ResponseWriter).rw.WriteHeader(w.(*ResponseWriter).Code)
 		w.(*ResponseWriter).rw.Write(w.(*ResponseWriter).Body)
+
+		// signal the logger middleware that the response has been written to
+		RequestResponseChan <- typing.RequestResponse{
+			Request:  RequestResponse.Request,
+			Response: w.(*ResponseWriter),
+			Code:     w.(*ResponseWriter).Code,
+		}
 	}
 }
 

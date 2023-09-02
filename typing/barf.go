@@ -81,3 +81,10 @@ type CORS struct {
 	// AllowedOriginWithRequestFunc is a callback for handling user defined origin checks with access to the http request object.
 	AllowedOriginWithRequestFunc func(origin string, r *http.Request) bool
 }
+
+// RequestResponse holds the request and response objects
+type RequestResponse struct {
+	Request  *http.Request
+	Response http.ResponseWriter
+	Code     int
+}

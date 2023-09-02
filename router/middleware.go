@@ -3,6 +3,7 @@ package router
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -33,10 +34,18 @@ func Router(respond func(w http.ResponseWriter, status bool, statusCode int, mes
 
 			// check if route exists
 			if !route.Exists() {
+				log.Println("route not found", route.Path, route.Method)
 				respond(w, false, http.StatusNotFound, fmt.Sprintf("Path /%s for method %s not found", regexp.MustCompile("^/+|/+$").ReplaceAllString(route.Path, ""), strings.ToUpper(route.Method)), nil)
 			} else {
 				// load params into context if any
 				ctx := context.WithValue(r.Context(), typing.ParamsCtxKey{}, route.Params)
+
+				r = r.WithContext(ctx)
+
+				// call route specific middleware(s)
+				for i := range route.stack {
+					sh = route.stack[len(route.stack)-1-i](sh)
+				}
 
 				// call middleware stack if route is registered on a SubRoute
 				if route.RetroFrame {
@@ -47,16 +56,15 @@ func Router(respond func(w http.ResponseWriter, status bool, statusCode int, mes
 						}
 					}
 				}
-
-				// call route specific middleware(s)
-				for i := range route.stack {
-					sh = route.stack[len(route.stack)-1-i](sh)
-				}
-
-				// call route handler
-				route.Handler(w, r.WithContext(ctx))
 			}
-			// call the next middleware
+
+			// make request/response available globally
+			server.RequestResponse = &typing.RequestResponse{
+				Request:  r,
+				Response: w,
+			}
+
+			// call the next middleware (if no route was found)
 			sh.ServeHTTP(w, r)
 		})
 	}

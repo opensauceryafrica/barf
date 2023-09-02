@@ -2,6 +2,8 @@ package router
 
 import (
 	"github.com/opensaucerer/barf/cors"
+	logger "github.com/opensaucerer/barf/log"
+
 	"github.com/opensaucerer/barf/server"
 
 	"github.com/opensaucerer/barf/typing"
@@ -51,11 +53,19 @@ func (h *hippocampus) Hijack(m ...typing.Middleware) {
 			for i := range h.stack {
 				r = h.stack[len(h.stack)-1-i](r)
 			}
-			// add cors middleware such that it is called first before any user-defined middleware
-			r = cors.CORS(cors.Prepare(*server.Augment.CORS))(r)
-			// add recovery middleware
-			if server.Augment.Recovery != nil && *server.Augment.Recovery {
-				r = server.Recover(server.JSON)(r)
+
+			if !server.Hijacked {
+				// add cors middleware such that it is called first before any user-defined middleware
+				r = cors.CORS(cors.Prepare(*server.Augment.CORS))(r)
+				// add recovery middleware
+				if server.Augment.Recovery != nil && *server.Augment.Recovery {
+					r = server.Recover(server.JSON)(r)
+					logger.Info("Recovery middleware added to base barf handler")
+				} else {
+					logger.Warn("Recovery middleware is disabled. This is not recommended for production environments!")
+					logger.Warn("Consider enabling it by passing barf.Augment{Recovery: barf.Allow()} to barf.Stark()")
+				}
+				server.Hijacked = true
 			}
 			server.HTTP.Handler = r
 		}

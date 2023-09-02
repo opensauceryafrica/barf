@@ -14,4 +14,10 @@ var (
 	Augment *typing.Augment
 
 	Beckoned *bool
+
+	Hijacked bool
+
+	RequestResponse *typing.RequestResponse
+
+	RequestResponseChan = make(chan typing.RequestResponse)
 )

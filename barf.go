@@ -29,9 +29,9 @@ func createServer(a typing.Augment) error {
 
 	var r http.Handler = server.Mux
 
-	// wrap router into logger middleware
+	// enable logging
 	if *server.Augment.Logging {
-		r = logger.Morgan(r)
+		go logger.Winston()
 	}
 
 	// wrap router into router middleware
@@ -60,10 +60,7 @@ func createServer(a typing.Augment) error {
 	}
 
 	// this will load the CORS and Recovery middleware into the stack
-	if *server.Augment.Recovery {
-		Hippocampus().Hijack()
-		logger.Info("Recovery middleware added to base barf handler")
-	}
+	Hippocampus().Hijack()
 
 	return nil
 }
