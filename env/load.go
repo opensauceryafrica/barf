@@ -1,5 +1,8 @@
-/* package env
-barf's simple interface for interacting environment variables. */
+/*
+	package env
+
+barf's simple interface for interacting environment variables.
+*/
 package env
 
 import (
@@ -62,8 +65,10 @@ func load(path string) error {
 		// split line
 		pair := strings.Split(line, "=")
 		// check if line is valid
-		if len(pair) != 2 {
+		if len(pair) < 2 {
 			return fmt.Errorf("invalid line in env file %s", line)
+		} else if len(pair) > 2 {
+			pair[1] = strings.Join(pair[1:], "=")
 		}
 		// set environment variable
 		if err := os.Setenv(pair[0], pair[1]); err != nil {
