@@ -14,7 +14,7 @@ If you have found a bug or have a feature request, please report them at this re
 
 If you would like to contribute code to fix a bug, implement a new feature, or improve the documentation, please follow the steps below:
 
-1. Open a detailed issue for your contribution (here)[https://github.com/opensaucerer/barf/issues] but you should only do that if one doesn't already exist.
+1. Open a detailed issue for your contribution [here](https://github.com/opensaucerer/barf/issues) but you should only do that if one doesn't already exist.
 2. Fork the repository.
 3. Create a new branch for your fix/feature.
 4. Make your changes, committing at logical breaks.

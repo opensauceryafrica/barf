@@ -67,7 +67,7 @@ func createServer(a typing.Augment) error {
 
 // Stark retrieves any existing barf server or creates a new one and returns an error, if any.
 // You can optionally pass in a barf.Augment struct to override the default config.
-// To start the server, call the bart.Beck()
+// To start the server, call the barf.Beck()
 func Stark(augmentation ...typing.Augment) error {
 	// return nil if server already exists
 	if server.HTTP != nil {
