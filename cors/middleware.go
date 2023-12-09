@@ -22,6 +22,7 @@ func CORS(options *cors) func(h http.Handler) http.Handler {
 					h.ServeHTTP(w, r)
 				} else {
 					w.WriteHeader(options.optionsSuccessStatus)
+					server.Write(w)
 				}
 			} else {
 				options.request(w, r)
