@@ -161,14 +161,14 @@ func Beck() error {
 
 	// start server with https enabled
 	if server.Augment.UseHTTPS {
-		logger.Info(fmt.Sprintf("BARF server started at https://%s:%s", server.Augment.Host, server.Augment.Port))
+		logger.Info(fmt.Sprintf("BARF server started at https://%v:%s", Obtain(server.Augment.Host, "localhost"), server.Augment.Port))
 		if err := server.HTTP.ListenAndServeTLS(server.Augment.SSLCertFile, server.Augment.SSLKeyFile); err != nil {
 			server.Beckoned = nil
 			return err
 		}
 	} else {
 		// start server
-		logger.Info(fmt.Sprintf("BARF server started at http://%s:%s", server.Augment.Host, server.Augment.Port))
+		logger.Info(fmt.Sprintf("BARF server started at http://%v:%s", Obtain(server.Augment.Host, "localhost"), server.Augment.Port))
 		if err := server.HTTP.ListenAndServe(); err != nil {
 			server.Beckoned = nil
 			return err

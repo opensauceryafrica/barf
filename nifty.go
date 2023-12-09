@@ -27,3 +27,11 @@ func True() bool {
 func False() bool {
 	return disallow
 }
+
+// Obtain is a nifty function that returns the value passed to it or the default value passed, if the value passed is nil.
+func Obtain(value, def interface{}) interface{} {
+	if value == nil {
+		return def
+	}
+	return value
+}
