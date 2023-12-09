@@ -30,8 +30,23 @@ func False() bool {
 
 // Obtain is a nifty function that returns the value passed to it or the default value passed, if the value passed is nil.
 func Obtain(value, def interface{}) interface{} {
+	// if value is nil, return default value
 	if value == nil {
 		return def
 	}
+
+	// if value is not nil, check inner value type
+	switch v := value.(type) {
+	case string:
+		if v == "" {
+			return def
+		}
+	case int, int64, int32, int16, int8, uint, uint64, uint32, uint16, uint8, float64, float32, bool:
+		return v
+
+	}
+
+	// return value if not nil
 	return value
+
 }
