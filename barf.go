@@ -210,13 +210,13 @@ func shutdown() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(server.Augment.ShutdownTimeout)*time.Second)
 	defer func() {
 		cancel()
+		time.Sleep(500 * time.Millisecond)
+		close(constant.ShutdownChan)
+		os.Exit(0)
 	}()
 	if err := server.HTTP.Shutdown(ctx); err != nil {
 		logger.Error("BARF forced to shut down...")
 		log.Fatal()
 	}
 	logger.Debug("BARF exited!")
-	close(constant.ShutdownChan)
-	time.Sleep(500 * time.Millisecond)
-	os.Exit(0)
 }

@@ -35,7 +35,7 @@ func NewSentinel(config *typing.HotReload) *Sentinel {
 }
 
 func (s *Sentinel) Start() error {
-	if err := s.Patrol(); err != nil {
+	if err := s.patrol(); err != nil {
 		return err
 	}
 
@@ -63,7 +63,7 @@ func (s *Sentinel) Start() error {
 	}
 }
 
-func (s *Sentinel) Patrol() error {
+func (s *Sentinel) patrol() error {
 	root := s.config.GetRoot()
 	return filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		if info != nil && !info.IsDir() {
@@ -75,6 +75,11 @@ func (s *Sentinel) Patrol() error {
 		}
 
 		if s.config.IsExcludeDir(path) {
+			logger.Warn(fmt.Sprintf("excluding path; %v", path))
+			return filepath.SkipDir
+		}
+
+		if s.config.IsTmpDir(path) {
 			logger.Warn(fmt.Sprintf("excluding path; %v", path))
 			return filepath.SkipDir
 		}
@@ -123,7 +128,6 @@ func (s *Sentinel) restartProcess() {
 		logger.Error(fmt.Sprintf("error shutting down server; %v", err))
 		return
 	}
-	time.Sleep(500 * time.Millisecond)
 
 	cmd := exec.Command("/bin/sh", "-c", s.config.GetBin())
 	cmd.Stdout = os.Stdout

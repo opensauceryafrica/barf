@@ -1,6 +1,7 @@
 package typing
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -104,8 +105,9 @@ type HotReload struct {
 	IncludeFile []string // files to include only
 	Delay       uint     // delay reload if changes occur too frequently
 	StopOnError bool     // if application should exit on error or ignore changes
-	BuildCmd    string
-	Bin         string
+	BuildCmd    string   // user specified build command
+	Bin         string   // binary file path
+	TmpDir      string   // temporary files directory
 }
 
 // GetRoot return the given root, defaults to .
@@ -158,14 +160,25 @@ func (h *HotReload) IsIncludeDir(dir string) bool {
 
 func (h *HotReload) GetBuildCmd() string {
 	if h.BuildCmd == "" {
-		return "go build -o ./tmp/main ."
+		return fmt.Sprintf("go build -o %s/main %s", h.GetTmpDir(), h.GetRoot())
 	}
 	return h.BuildCmd
 }
 
 func (h *HotReload) GetBin() string {
 	if h.Bin == "" {
-		return "./tmp/main"
+		return fmt.Sprintf("%s/main", h.GetTmpDir())
 	}
 	return h.Bin
+}
+
+func (h *HotReload) GetTmpDir() string {
+	if h.TmpDir == "" {
+		return "tmp"
+	}
+	return h.TmpDir
+}
+
+func (h *HotReload) IsTmpDir(dir string) bool {
+	return h.GetTmpDir() == dir
 }
