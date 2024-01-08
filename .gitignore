@@ -2,3 +2,4 @@ bin
 example/.env
 *.crt
 *.key
+.idea

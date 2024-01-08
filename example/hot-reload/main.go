@@ -18,8 +18,9 @@ func main() {
 			ExcludeDir:  []string{},
 			IncludeDir:  []string{},
 			StopOnError: false,
-			BuildCmd:    "go build -o app",
-			Bin:         "./app",
+			BuildCmd:    "go build -o temp/app",
+			Bin:         "./temp/app",
+			TmpDir:      "temp",
 		},
 	}); err != nil {
 		barf.Logger().Error(err.Error())
