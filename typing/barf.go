@@ -1,6 +1,9 @@
 package typing
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 // Augment holds reference to all of barf's config
 type Augment struct {
@@ -50,6 +53,10 @@ type Augment struct {
 	SSLCertFile string
 	// SSLKeyFile is the path to the private key of the certificate in use.
 	SSLKeyFile string
+	// AllowHotReload if true allows application to listen for file changes and restart the server.
+	AllowHotReload *bool
+	// HotReload contains configuration for server hot-re
+	HotReload *HotReload
 }
 
 // CORS holds configuration for Cross-Origin Resource Sharing
@@ -87,4 +94,91 @@ type RequestResponse struct {
 	Request  *http.Request
 	Response http.ResponseWriter
 	Code     int
+}
+
+type HotReload struct {
+	Root        string   // working dir, defaults to .
+	IncludeExt  []string // file extensions to watch, defaults to all
+	ExcludeExt  []string // file extensions to exclude
+	ExcludeDir  []string // directories to exclude
+	IncludeDir  []string // directories to include, defaults to all
+	IncludeFile []string // files to include only
+	Delay       uint     // delay reload if changes occur too frequently
+	StopOnError bool     // if application should exit on error or ignore changes
+	BuildCmd    string   // user specified build command
+	Bin         string   // binary file path
+	TmpDir      string   // temporary files directory
+}
+
+// GetRoot return the given root, defaults to .
+func (h *HotReload) GetRoot() string {
+	if h.Root == "" {
+		return "."
+	}
+	return h.Root
+}
+
+// IsIncludeFile returns true if a given filename is in IncludeFile config
+func (h *HotReload) IsIncludeFile(filename string) bool {
+	if len(h.IncludeFile) < 1 {
+		return false
+	}
+	for _, file := range h.IncludeFile {
+		if file == filename {
+			return true
+		}
+	}
+	return false
+}
+
+// IsExcludeDir returns true if a given directory is in the ExcludeDir config
+func (h *HotReload) IsExcludeDir(dir string) bool {
+	if len(h.ExcludeDir) < 1 {
+		return false
+	}
+	for _, d := range h.ExcludeDir {
+		if d == dir {
+			return true
+		}
+	}
+	return false
+}
+
+// IsIncludeDir returns true if a given directory is in the IncludeDir config
+// empty config returns true
+func (h *HotReload) IsIncludeDir(dir string) bool {
+	if len(h.IncludeDir) < 1 {
+		return true
+	}
+	for _, d := range h.IncludeDir {
+		if d == dir {
+			return true
+		}
+	}
+	return false
+}
+
+func (h *HotReload) GetBuildCmd() string {
+	if h.BuildCmd == "" {
+		return fmt.Sprintf("go build -o %s/main %s", h.GetTmpDir(), h.GetRoot())
+	}
+	return h.BuildCmd
+}
+
+func (h *HotReload) GetBin() string {
+	if h.Bin == "" {
+		return fmt.Sprintf("%s/main", h.GetTmpDir())
+	}
+	return h.Bin
+}
+
+func (h *HotReload) GetTmpDir() string {
+	if h.TmpDir == "" {
+		return "tmp"
+	}
+	return h.TmpDir
+}
+
+func (h *HotReload) IsTmpDir(dir string) bool {
+	return h.GetTmpDir() == dir
 }

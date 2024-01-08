@@ -1,4 +1,6 @@
-/* package barf
+/*
+	package barf
+
 Basically, A Remarkable Framework!
 */
 package barf
@@ -10,3 +12,6 @@ type Augment = typing.Augment
 
 // CORS holds configuration for Cross-Origin Resource Sharing
 type CORS = typing.CORS
+
+// HotReload holds configuration for hot-reloading the server on file changes
+type HotReload = typing.HotReload

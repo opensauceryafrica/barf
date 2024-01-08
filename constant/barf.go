@@ -53,4 +53,6 @@ var (
 		"required": []string{"true", "false"},
 		"key":      nil,
 	}
+
+	AllowHotReload = false
 )

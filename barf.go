@@ -7,9 +7,12 @@ package barf
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"golang.org/x/sync/errgroup"
 	"log"
 	"net/http"
+	"os"
 	"os/signal"
 	"reflect"
 	"syscall"
@@ -23,7 +26,6 @@ import (
 )
 
 func createServer(a typing.Augment) error {
-
 	// create handler
 	server.Mux = http.NewServeMux()
 
@@ -85,6 +87,8 @@ func Stark(augmentation ...typing.Augment) error {
 		Logging:           &constant.Logging,
 		Recovery:          &constant.Recovery,
 		CORS:              &typing.CORS{},
+		AllowHotReload:    &constant.AllowHotReload,
+		HotReload:         &typing.HotReload{},
 	}
 	if len(augmentation) > 0 {
 		// validate the struct
@@ -134,6 +138,12 @@ func Stark(augmentation ...typing.Augment) error {
 			augu.SSLKeyFile = aug.SSLKeyFile
 		}
 		augu.UseHTTPS = aug.UseHTTPS
+		if aug.AllowHotReload != nil {
+			augu.AllowHotReload = aug.AllowHotReload
+		}
+		if aug.HotReload != nil {
+			augu.HotReload = aug.HotReload
+		}
 	}
 	// make config global
 	server.Augment = &augu
@@ -159,22 +169,31 @@ func Beck() error {
 		shutdown()
 	}()
 
-	// start server with https enabled
+	var g errgroup.Group
+
+	if server.Augment.AllowHotReload != nil && *server.Augment.AllowHotReload {
+		g.Go(func() error {
+			logger.Info("setting up HOT RELOAD...")
+			sentinel := NewSentinel(server.Augment.HotReload)
+			return sentinel.Start()
+		})
+	}
+
+	if err := StartServer(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		return err
+	}
+
+	return g.Wait()
+}
+
+func StartServer() error {
 	if server.Augment.UseHTTPS {
 		logger.Info(fmt.Sprintf("BARF server started at https://%v:%s", Obtain(server.Augment.Host, "localhost"), server.Augment.Port))
-		if err := server.HTTP.ListenAndServeTLS(server.Augment.SSLCertFile, server.Augment.SSLKeyFile); err != nil {
-			server.Beckoned = nil
-			return err
-		}
+		return server.HTTP.ListenAndServeTLS(server.Augment.SSLCertFile, server.Augment.SSLKeyFile)
 	} else {
-		// start server
 		logger.Info(fmt.Sprintf("BARF server started at http://%v:%s", Obtain(server.Augment.Host, "localhost"), server.Augment.Port))
-		if err := server.HTTP.ListenAndServe(); err != nil {
-			server.Beckoned = nil
-			return err
-		}
+		return server.HTTP.ListenAndServe()
 	}
-	return nil
 }
 
 // shutdown gracefully shuts down the server with the specified timeout.
@@ -191,6 +210,9 @@ func shutdown() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(server.Augment.ShutdownTimeout)*time.Second)
 	defer func() {
 		cancel()
+		time.Sleep(500 * time.Millisecond)
+		close(constant.ShutdownChan)
+		os.Exit(0)
 	}()
 	if err := server.HTTP.Shutdown(ctx); err != nil {
 		logger.Error("BARF forced to shut down...")
