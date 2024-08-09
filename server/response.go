@@ -70,6 +70,11 @@ func (w *ResponseWriter) Write(b []byte) (int, error) {
 	return len(b), nil
 }
 
+// this is important so as to mantain the http.Hijacker interface to make websocket connections upgradeable
+func (w *ResponseWriter) Unwrap() http.ResponseWriter {
+	return w.rw
+}
+
 // Loaded returns true if the response has been overloaded by barf's server.ResponseWriter
 func Loaded(w http.ResponseWriter) bool {
 	_, ok := w.(*ResponseWriter)
