@@ -22,7 +22,7 @@ import (
 	"github.com/opensaucerer/barf/typing"
 )
 
-func createServer(a typing.Augment) error {
+func createServer() error {
 
 	// create handler
 	server.Mux = http.NewServeMux()
@@ -137,7 +137,7 @@ func Stark(augmentation ...typing.Augment) error {
 	}
 	// make config global
 	server.Augment = &augu
-	return createServer(augu)
+	return createServer()
 }
 
 // Beck starts the barf server and returns an error, if any. Alternatively, Beck also creates a new barf server with the default config and starts it, only if barf.Stark() was not called before.
